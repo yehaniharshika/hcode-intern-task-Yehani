@@ -6,6 +6,8 @@ import {Provider} from "react-redux";
 import Signup from './components/Signup.tsx';
 import Login from './components/Login.tsx';
 import store from './store/store.ts';
+import UploadPage from './pages/uploadPage.tsx';
+import UpdateVehiclesPage from './pages/UpdateVehiclesPage.tsx';
 
 
 
@@ -19,8 +21,8 @@ function App() {
         { path: '/signup', element: <Signup /> },
         { path: '/login', element: <Login /> },
         { path: '/dashboard', element: <Dashboard /> },
-        // { path: '/customer', element: <CustomerPage/> },
-        // { path: '/product', element: <ProductsPage/> },
+        { path: '/uploads', element: <UploadPage/> },
+        { path: '/updates', element: <UpdateVehiclesPage/> },
         // { path: '/orders', element: <OrdersPage /> },
         // { path: '/setting', element: <SettingPage /> },
         // { path: '/logout', element: <Logout /> },

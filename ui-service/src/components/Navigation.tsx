@@ -96,9 +96,9 @@ export const Navigation = () => {
                 label: "vehicle",
               },
               {
-                to: "/report",
+                to: "/updates",
                 icon: <FaFileMedical size={24} />,
-                label: "Reports",
+                label: "Details",
               },
               { to: "/setting", icon: <FaGear size={24} />, label: "Settings" },
               {
