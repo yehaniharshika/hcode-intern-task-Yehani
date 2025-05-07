@@ -4,12 +4,13 @@ import { createConnection } from "typeorm";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./src/resolver/UserResolver";
 import { ApolloServer } from "apollo-server-express";
+import { VehicleResolver } from "./src/resolver/VehicleResolver";
 
 async function main() {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver,VehicleResolver],
     emitSchemaFile: true,
   });
 

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Vehicle {
@@ -23,7 +23,7 @@ export class Vehicle {
   @Column()
   vin!: string;
 
-  @Column()
+  @Column({ type: 'date' })
   manufactured_date!: Date;
 
   @Column()
