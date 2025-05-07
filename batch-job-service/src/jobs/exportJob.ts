@@ -1,10 +1,11 @@
 import { Job } from 'bull';
-import { AppDataSource } from '../config/data-source';
-import { Vehicle } from '../../../database-service/src/entity/Vehicle';
 import { stringify } from 'csv-stringify';
 import fs from 'fs/promises';
 import path from 'path';
-import { MoreThan } from 'typeorm'; // ✅ Added import
+import { MoreThan } from 'typeorm';
+
+import { Vehicle } from '../../../database-service/src/entity/Vehicle';
+import { AppDataSource } from '../config/data-source';
 
 export const exportVehicles = async (minimumAge: number): Promise<string> => {
   const vehicleRepo = AppDataSource.getRepository(Vehicle);

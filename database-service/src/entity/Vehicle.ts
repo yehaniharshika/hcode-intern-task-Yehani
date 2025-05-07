@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 
 @Entity()
-export class Vehicle {
+export class Vehicle extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -23,7 +23,7 @@ export class Vehicle {
   @Column()
   vin!: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: "date", nullable: true })
   manufactured_date!: Date;
 
   @Column()

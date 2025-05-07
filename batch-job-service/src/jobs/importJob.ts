@@ -1,8 +1,9 @@
 // batch-job-service/src/jobs/importJob.ts
 import { Job } from 'bull';
 import { parseCSV } from '../utils/csvParser';
-import { AppDataSource } from '../config/data-source';
+import { AppDataSource } from '../../../database-service/src/config/data-source';
 import { Vehicle } from '../../../database-service/src/entity/Vehicle';
+
 
 export const importJobProcessor = async (job: Job) => {
   const { filePath } = job.data;

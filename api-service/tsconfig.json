@@ -108,6 +108,10 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true  ,
+    "baseUrl": ".", // this means "api-service" root
+    "paths": {
+      "@db/entities/*": ["../database-service/entities/*"]
+    },                               /* Skip type checking all .d.ts files. */
   }
 }

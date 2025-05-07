@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { AppDataSource } from './src/config/data-source';
+
 import { jobQueue } from '../api-service/src/queues/jobQueue';
 import { importJobProcessor } from './src/jobs/importJob';
 import { exportJobProcessor } from './src/jobs/exportJob';
+import { AppDataSource } from '../database-service/src/config/data-source';
 
 const start = async () => {
   try {

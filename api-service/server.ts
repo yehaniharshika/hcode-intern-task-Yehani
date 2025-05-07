@@ -1,30 +1,38 @@
-import "reflect-metadata";
-import express from "express";
-import { createConnection } from "typeorm";
-import { buildSchema } from "type-graphql";
-import { UserResolver } from "./src/resolver/UserResolver";
-import { ApolloServer } from "apollo-server-express";
-import { VehicleResolver } from "./src/resolver/VehicleResolver";
+// src/server.ts
+import 'reflect-metadata'; // required by type-graphql
+import 'dotenv/config';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from 'type-graphql';
+import { AppDataSource } from './src/config/data-source';
+import { UserResolver } from './src/resolver/UserResolver';
+import { VehicleResolver } from './src/resolver/VehicleResolver';
 
-async function main() {
-  await createConnection();
 
-  const schema = await buildSchema({
-    resolvers: [UserResolver,VehicleResolver],
-    emitSchemaFile: true,
-  });
+const startServer = async () => {
+  try {
+    await AppDataSource.initialize();
+    console.log('✅ Database connected!');
 
-  const apolloServer = new ApolloServer({ schema });
+    const schema = await buildSchema({
+      resolvers: [UserResolver,VehicleResolver], // <-- register your resolver here
+    });
 
-  const app = express();
+    const server = new ApolloServer({
+      schema, // not typeDefs/resolvers, use the built schema
+    });
 
-  await apolloServer.start();
-  apolloServer.applyMiddleware({ app });
+    await server.start();
 
-  app.listen(4001, () => {
-    console.log("Server started on http://localhost:4001/graphql");
-  });
-}
+    const app = express();
+    server.applyMiddleware({ app });
 
-// ✅ Don't forget this line
-main().catch((err) => console.error(err));
+    app.listen({ port: 4000 }, () =>
+      console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+    );
+  } catch (error) {
+    console.error('❌ Server startup error:', error);
+  }
+};
+
+startServer();

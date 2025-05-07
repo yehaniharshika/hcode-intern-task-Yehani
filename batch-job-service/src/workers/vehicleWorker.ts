@@ -11,5 +11,12 @@ const jobQueue = new Bull('vehicle-job-queue', {
   },
 });
 
-jobQueue.process('import', importJobProcessor);
-jobQueue.process('export', exportJobProcessor);
+jobQueue.process('import', async (job) => {
+  console.log('🎯 Running import job...', job.data);
+  await importJobProcessor(job);
+});
+
+jobQueue.process('export', async (job) => {
+  console.log('🎯 Running export job...', job.data);
+  await exportJobProcessor(job);
+});
