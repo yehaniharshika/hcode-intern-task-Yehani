@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
-@Entity()
+@Entity()  // Ensure this decorator is present
 export class Vehicle extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;

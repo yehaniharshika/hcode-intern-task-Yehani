@@ -109,9 +109,8 @@
     "skipLibCheck": true,  
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true, 
-    "baseUrl": ".",                  // Root directory
-    "paths": {
-      "@shared/*": ["shared/*"]      // Add path alias
-    }                              /* Skip type checking all .d.ts files. */
+    "outDir": "./dist",                // compiled JS output
+    "declaration": true                              
   },
+  "include": ["src/**/*"],
 }

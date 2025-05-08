@@ -31,7 +31,7 @@ const startServer = async () => {
       console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     );
   } catch (error) {
-    console.error('❌ Server startup error:', error);
+    console.error('Server startup error:', error);
   }
 };
 

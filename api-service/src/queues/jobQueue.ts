@@ -1,10 +1,9 @@
-// api-service/src/queues/jobQueue.ts
-import Bull from 'bull';
-import 'dotenv/config';
+// jobQueue.ts
+import Queue from 'bull';
 
-export const jobQueue = new Bull('vehicle-job-queue', {
+export const jobQueue = new Queue('import', {
   redis: {
-    host: process.env.REDIS_HOST,
-    port: parseInt(process.env.REDIS_PORT || '6379'),
+    host: '127.0.0.1',
+    port: 6380, // redis-server එකේ port එක
   },
 });

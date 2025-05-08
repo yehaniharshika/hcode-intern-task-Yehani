@@ -3,7 +3,6 @@ import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { Vehicle } from '../entity/Vehicle';
 
-
 export const AppDataSource = new DataSource({
   type: 'mysql',
   host: process.env.DB_HOST,
@@ -12,5 +11,5 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [Vehicle],
-  synchronize: true,
+  synchronize: true,  
 });

@@ -1,44 +1,49 @@
 // api-service/src/resolvers/VehicleResolver.ts
-import { Resolver, Query, Mutation, Arg, ID, Int } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, ID, Int } from "type-graphql";
 
-import { AppDataSource } from '../config/data-source';
-import { jobQueue } from '../queues/jobQueue';
-import { Vehicle } from '../entity/Vehicle';
+import { AppDataSource } from "../config/data-source";
+import { jobQueue } from "../queues/jobQueue";
+import { Vehicle } from "../entity/Vehicle";
 
 @Resolver(Vehicle)
 export class VehicleResolver {
   private vehicleRepository = AppDataSource.getRepository(Vehicle);
 
   @Query(() => [Vehicle])
-  async vehicles(@Arg('page', () => Int, { defaultValue: 1 }) page: number): Promise<Vehicle[]> {
+  async vehicles(
+    @Arg("page", () => Int, { defaultValue: 1 }) page: number
+  ): Promise<Vehicle[]> {
     const take = 100;
     const skip = (page - 1) * take;
     return this.vehicleRepository.find({
-      order: { manufactured_date: 'ASC' },
+      order: { manufactured_date: "ASC" },
       skip,
       take,
     });
   }
 
   @Query(() => [Vehicle])
-  async searchVehicles(@Arg('model', () => String) model: string): Promise<Vehicle[]> {
+  async searchVehicles(
+    @Arg("model", () => String) model: string
+  ): Promise<Vehicle[]> {
     return this.vehicleRepository
-      .createQueryBuilder('vehicle')
-      .where('vehicle.car_model LIKE :model', { model: `${model}%` })
+      .createQueryBuilder("vehicle")
+      .where("vehicle.car_model LIKE :model", { model: `${model}%` })
       .getMany();
   }
 
   @Mutation(() => Vehicle)
   async createVehicle(
-    @Arg('first_name') first_name: string,
-    @Arg('last_name') last_name: string,
-    @Arg('email') email: string,
-    @Arg('car_make') car_make: string,
-    @Arg('car_model') car_model: string,
-    @Arg('vin') vin: string,
-    @Arg('manufactured_date') manufactured_date: string
+    @Arg("first_name") first_name: string,
+    @Arg("last_name") last_name: string,
+    @Arg("email") email: string,
+    @Arg("car_make") car_make: string,
+    @Arg("car_model") car_model: string,
+    @Arg("vin") vin: string,
+    @Arg("manufactured_date") manufactured_date: string
   ): Promise<Vehicle> {
-    const age = new Date().getFullYear() - new Date(manufactured_date).getFullYear();
+    const age =
+      new Date().getFullYear() - new Date(manufactured_date).getFullYear();
     const vehicle = this.vehicleRepository.create({
       first_name,
       last_name,
@@ -54,14 +59,14 @@ export class VehicleResolver {
 
   @Mutation(() => Vehicle, { nullable: true })
   async updateVehicle(
-    @Arg('id', () => ID) id: number,
-    @Arg('first_name', { nullable: true }) first_name?: string,
-    @Arg('last_name', { nullable: true }) last_name?: string,
-    @Arg('email', { nullable: true }) email?: string,
-    @Arg('car_make', { nullable: true }) car_make?: string,
-    @Arg('car_model', { nullable: true }) car_model?: string,
-    @Arg('vin', { nullable: true }) vin?: string,
-    @Arg('manufactured_date', { nullable: true }) manufactured_date?: string
+    @Arg("id", () => ID) id: number,
+    @Arg("first_name", { nullable: true }) first_name?: string,
+    @Arg("last_name", { nullable: true }) last_name?: string,
+    @Arg("email", { nullable: true }) email?: string,
+    @Arg("car_make", { nullable: true }) car_make?: string,
+    @Arg("car_model", { nullable: true }) car_model?: string,
+    @Arg("vin", { nullable: true }) vin?: string,
+    @Arg("manufactured_date", { nullable: true }) manufactured_date?: string
   ): Promise<Vehicle | undefined> {
     const vehicle = await this.vehicleRepository.findOne({ where: { id } });
     if (!vehicle) return undefined;
@@ -74,27 +79,29 @@ export class VehicleResolver {
     if (vin !== undefined) vehicle.vin = vin;
     if (manufactured_date !== undefined) {
       vehicle.manufactured_date = new Date(manufactured_date);
-      vehicle.age_of_vehicle = new Date().getFullYear() - vehicle.manufactured_date.getFullYear();
+      vehicle.age_of_vehicle =
+        new Date().getFullYear() - vehicle.manufactured_date.getFullYear();
     }
 
     return this.vehicleRepository.save(vehicle);
   }
 
   @Mutation(() => Boolean)
-  async deleteVehicle(@Arg('id', () => ID) id: number): Promise<boolean> {
+  async deleteVehicle(@Arg("id", () => ID) id: number): Promise<boolean> {
     const result = await this.vehicleRepository.delete(id);
     return result.affected !== 0;
   }
 
   @Mutation(() => Boolean)
-  async importVehicles(@Arg('filePath') filePath: string): Promise<boolean> {
-    await jobQueue.add('import', { filePath });
+  async importVehicles(@Arg("filePath") filePath: string): Promise<boolean> {
+    console.log("Import job enqueued for file:", filePath); // Add this
+    await jobQueue.add("import", { filePath });
     return true;
   }
 
   @Mutation(() => Boolean)
-  async exportVehicles(@Arg('age', () => Int) age: number): Promise<boolean> {
-    await jobQueue.add('export', { age });
+  async exportVehicles(@Arg("age", () => Int) age: number): Promise<boolean> {
+    await jobQueue.add("export", { age });
     return true;
   }
 }

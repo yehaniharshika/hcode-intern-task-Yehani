@@ -21,7 +21,7 @@
     "mysql2": "^3.14.1",
     "pg": "^8.15.6",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.23"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

@@ -6,10 +6,10 @@ export const AppDataSource = new DataSource({
   type: 'mysql',
   host: 'localhost',
   port: 3306,
-  username: 'root',   // 🔁 replace with your MySQL username
-  password: '1234',   // 🔁 replace with your MySQL password
-  database: 'vehicledatadb',    // 🔁 replace with your database name
-  synchronize: true,                 // set to false in production
+  username: 'root',   
+  password: '1234',
+  database: 'vehicledatadb', 
+  synchronize: true, 
   logging: false,
   entities: [Vehicle],
   migrations: [
