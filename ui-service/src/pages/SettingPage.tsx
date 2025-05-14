@@ -25,7 +25,7 @@ const SettingSection: React.FC<SettingSectionProps> = ({ user }) => {
   return (
     <div className="flex overflow-hidden bg-emerald-200">
       <Navigation />
-      <div className="flex-1 p-5" style={{ backgroundColor: "#cec4ff"}}>
+      <div className="flex-1 p-5" style={{ backgroundColor: "#c5cbe9"}}>
         <Container fluid>
           
           <Col md={9} className="p-4">
