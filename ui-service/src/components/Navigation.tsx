@@ -69,13 +69,9 @@ export const Navigation = () => {
           )}
 
           {/* Logo Section */}
-          <div className="py-4 flex justify-center items-center border-b border-gray-300">
-            <img
-              src="/src/assets/images/logo.png"
-              alt="Logo"
-              width={220}
-              className="transition-all duration-300"
-            />
+          <div className="py-4 flex justify-center items-center border-b border-gray-300" style={{fontFamily: "'Lilita One', sans-serif",
+          fontSize: "24px"}}>
+            🚗Vehicore
           </div>
 
           <ul className="px-3 text-[0.9rem] py-5 flex flex-col gap-3 font-bold">

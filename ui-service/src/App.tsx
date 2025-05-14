@@ -8,6 +8,8 @@ import Login from './components/Login.tsx';
 import store from './store/store.ts';
 import UploadPage from './pages/uploadPage.tsx';
 import UpdateVehiclesPage from './pages/UpdateVehiclesPage.tsx';
+import SettingPage from './pages/SettingPage.tsx';
+
 
 
 
@@ -24,7 +26,7 @@ function App() {
         { path: '/uploads', element: <UploadPage/> },
         { path: '/updates', element: <UpdateVehiclesPage/> },
         // { path: '/orders', element: <OrdersPage /> },
-        // { path: '/setting', element: <SettingPage /> },
+        { path: '/setting', element: <SettingPage /> },
         // { path: '/logout', element: <Logout /> },
       ],
     },
