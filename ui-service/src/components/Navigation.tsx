@@ -1,14 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AiOutlineAppstore } from "react-icons/ai";
-import {
-  FaFileMedical,
-  FaGear,
-  FaUserLock,
-} from "react-icons/fa6";
+import { FaCarSide, FaFileMedical, FaGear } from "react-icons/fa6";
 import { FaSignOutAlt } from "react-icons/fa";
 import { RiCloseFill, RiMenu3Line } from "react-icons/ri";
-import { BsCake2Fill, BsCartCheckFill } from "react-icons/bs";
+import { GrDocumentDownload } from "react-icons/gr";
 
 export const Navigation = () => {
   const [open, setOpen] = useState(window.innerWidth > 780);
@@ -52,7 +48,7 @@ export const Navigation = () => {
       {/* Sidebar container */}
       {open && (
         <div
-          style={{ backgroundColor: "#6F1E51" }}
+          style={{ backgroundColor: "#3F51B5" }}
           className={`z-40 h-screen text-gray-100 px-4 fixed top-0 transition-transform duration-500 w-64 ${
             isMobile ? "fixed" : "relative"
           }`}
@@ -69,8 +65,10 @@ export const Navigation = () => {
           )}
 
           {/* Logo Section */}
-          <div className="py-4 flex justify-center items-center border-b border-gray-300" style={{fontFamily: "'Lilita One', sans-serif",
-          fontSize: "24px"}}>
+          <div
+            className="py-4 flex justify-center items-center border-b border-gray-300"
+            style={{ fontFamily: "'Lilita One', sans-serif", fontSize: "24px" }}
+          >
             🚗Vehicore
           </div>
 
@@ -83,19 +81,21 @@ export const Navigation = () => {
               },
               {
                 to: "/uploads",
-                icon: <FaUserLock size={24} />,
-                label: "Uploads",
+                icon: <FaCarSide size={24} />,
+                label: "Vehicles",
               },
-              {
-                to: "/vehicle",
-                icon: <BsCake2Fill size={24} />,
-                label: "vehicle",
-              },
+
               {
                 to: "/updates",
                 icon: <FaFileMedical size={24} />,
                 label: "Details",
               },
+              {
+                to: "/reports",
+                icon: <GrDocumentDownload size={24} />,
+                label: "Reports",
+              },
+
               { to: "/setting", icon: <FaGear size={24} />, label: "Settings" },
               {
                 to: "/logout",
@@ -112,11 +112,17 @@ export const Navigation = () => {
                   }) => `flex items-center gap-3 p-2 rounded-lg transition-all duration-300 text-[15.5px] 
                         ${
                           isActive
-                            ? "bg-[#9a6285] text-white shadow-md scale-105"
+                            ? "bg-[#6574c4] text-white shadow-md scale-105"
                             : "text-white"
                         } 
-                        hover:bg-[#9a6285] hover:border-2 hover:text-white hover:scale-105 hover:shadow-lg no-underline`}
-                  style={{ textDecoration: "none" }}
+                        hover:bg-[#9fa8da] hover:border-2 hover:text-white hover:scale-105 hover:shadow-lg no-underline`}
+                  style={{
+                    textDecoration: "none",
+                    fontFamily: "'Montserrat', serif",
+                    fontSize:"15px",
+                    color: "darkblue",
+                    fontWeight: "600",
+                  }}
                 >
                   {icon} {label}
                 </NavLink>
