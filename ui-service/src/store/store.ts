@@ -7,7 +7,7 @@ import VehicleSlice from "../reducers/VehicleSlice";
 
 const store = configureStore({
     reducer: {
-        vehicles: VehicleSlice,
+        vehicle: VehicleSlice,
     },
 });
 
