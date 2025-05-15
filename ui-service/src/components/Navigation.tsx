@@ -48,8 +48,8 @@ export const Navigation = () => {
       {/* Sidebar container */}
       {open && (
         <div
-          style={{ backgroundColor: "#3F51B5" }}
-          className={`z-40 h-screen text-gray-100 px-4 fixed top-0 transition-transform duration-500 w-64 ${
+          style={{ backgroundColor: "#3F51B5" ,minHeight:"100vh" }}
+          className={`z-40  text-gray-100 px-4 fixed top-0 transition-transform duration-500 w-64 ${
             isMobile ? "fixed" : "relative"
           }`}
         >
@@ -85,11 +85,6 @@ export const Navigation = () => {
                 label: "Vehicles",
               },
 
-              {
-                to: "/updates",
-                icon: <FaFileMedical size={24} />,
-                label: "Details",
-              },
               {
                 to: "/reports",
                 icon: <GrDocumentDownload size={24} />,
