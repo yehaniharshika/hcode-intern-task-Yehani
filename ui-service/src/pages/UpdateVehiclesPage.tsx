@@ -38,9 +38,9 @@ const UpdateVehiclesPage = () => {
   return (
     <div className="d-flex w-100 min-vh-100">
       <Navigation />
-      <div className="flex-grow-1 p-4" style={{ backgroundColor: "#fceef4" }}>
+      <div className="flex-grow-1 p-4" style={{ backgroundColor: "#c5cbe9" }}>
         <Container fluid>
-          <h4 className="mb-4" style={{ fontFamily: "'Ubuntu', sans-serif" }}>
+          <h4 className="mb-4" style={{fontFamily: "'Montserrat', serif",fontWeight:"bold",color:"darkblue",marginTop:"60px"}}>
             Vehicle Records
           </h4>
           <div className="table-responsive">

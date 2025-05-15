@@ -26,7 +26,7 @@ export class Vehicle extends BaseEntity {
   @Column()
   vin!: string;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'date', nullable: true })
   manufactured_date!: Date;
 
   @Column()
