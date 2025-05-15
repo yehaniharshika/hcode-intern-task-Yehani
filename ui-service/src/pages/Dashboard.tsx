@@ -10,9 +10,9 @@ import { color, motion } from "framer-motion";
 import { FiBell, FiUser } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { Navigation } from "../components/Navigation";
-import { SiGooglemessages } from "react-icons/si";
-import { IoNotificationsCircleOutline } from "react-icons/io5";
+import { IoNotifications } from "react-icons/io5";
 import { MdSearch } from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,13 +31,13 @@ const Dashboard = () => {
   return (
     <div className="flex w-full h-full overflow-hidden">
       <Navigation />
-      <div className="flex-1 p-5" style={{ backgroundColor: "#b78fa8" }}>
+      <div className="flex-1 p-5" style={{ backgroundColor: "#c5cbe9" }}>
         <Container fluid>
           <Row className="align-items-center mb-3">
             <Col md={12}>
               <div
                 className="p-3 rounded top-50"
-                style={{ backgroundColor: "#8854d0" }}
+                style={{ backgroundColor: "#9fa8da" }}
               >
                 <Container fluid>
                   <Row className="align-items-center">
@@ -48,9 +48,10 @@ const Dashboard = () => {
                           className="font-bold"
                           style={{
                             fontFamily: "'Montserrat', serif",
-                            fontSize: "15px",
+                            fontSize: "14px",
+                            fontWeight: "600",
                           }}
-                          placeholder="Search..."
+                          placeholder="Search"
                         />
                         <InputGroup.Text>
                           <MdSearch />
@@ -60,9 +61,8 @@ const Dashboard = () => {
 
                     <Col md={6}>
                       <div className="d-flex justify-content-end align-items-center gap-3">
-                        
-                        <FiUser size={32} />
-                        <FiBell size={32} />
+                        <FaUserCircle size={30} />
+                        <IoNotifications size={30} />
                       </div>
                     </Col>
                   </Row>
