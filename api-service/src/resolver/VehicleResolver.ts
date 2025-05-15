@@ -9,8 +9,9 @@ import { Vehicle } from "../entity/Vehicle";
 export class VehicleResolver {
   private vehicleRepository = AppDataSource.getRepository(Vehicle);
 
+  // Get all vehicles with pagination
   @Query(() => [Vehicle])
-  async vehicles(
+  async getAllVehicles(
     @Arg("page", () => Int, { defaultValue: 1 }) page: number
   ): Promise<Vehicle[]> {
     const take = 100;

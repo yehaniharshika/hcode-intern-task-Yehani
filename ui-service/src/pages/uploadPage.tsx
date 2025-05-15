@@ -47,6 +47,7 @@ const UploadPage = () => {
         car_model,
         vin,
         manufactured_date,
+        age_of_vehicle,
       })
     )
       .unwrap()
@@ -69,7 +70,6 @@ const UploadPage = () => {
         setCarModel("");
         setVin("");
         setManufacturedDate("");
-        setAgeOfVehicle("");
       })
       .catch((error) => {
         alert("Error adding vehicle: " + error.message);
@@ -95,7 +95,7 @@ const UploadPage = () => {
                 style={{
                   backgroundColor: "#3F51B5",
                   color: "white",
-                  marginTop: "50px",
+                  marginTop: "40px",
                 }}
               >
                 <h4 className="mb-4">Upload Vehicle Data File</h4>
@@ -118,7 +118,7 @@ const UploadPage = () => {
             <Col md={6} sm={12}>
               <div
                 className="p-4 rounded shadow"
-                style={{ backgroundColor: "#FFFFFF", marginTop: "50px" }}
+                style={{ backgroundColor: "#FFFFFF",marginTop: "40px",}}
               >
                 <Form>
                   <Form.Group className="mb-3">
@@ -194,7 +194,7 @@ const UploadPage = () => {
                     <Form.Control
                       type="text"
                       value={age_of_vehicle}
-                      readOnly // Optional: make it read-only since it's auto-calculated
+                      readOnly 
                     />
                   </Form.Group>
 
