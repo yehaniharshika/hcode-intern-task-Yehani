@@ -1,13 +1,12 @@
-// src/server.ts
-import 'reflect-metadata'; // required by type-graphql
+import 'reflect-metadata';
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { AppDataSource } from './src/config/data-source';
-import { UserResolver } from './src/resolver/UserResolver';
 import { VehicleResolver } from './src/resolver/VehicleResolver';
-
+import { UserResolver } from './src/resolver/UserResolver';
 
 const startServer = async () => {
   try {
@@ -15,23 +14,37 @@ const startServer = async () => {
     console.log('✅ Database connected!');
 
     const schema = await buildSchema({
-      resolvers: [UserResolver,VehicleResolver], // <-- register your resolver here
+      resolvers: [UserResolver, VehicleResolver],
     });
 
-    const server = new ApolloServer({
-      schema, // not typeDefs/resolvers, use the built schema
-    });
+    const server = new ApolloServer({ schema });
 
     await server.start();
 
     const app = express();
-    server.applyMiddleware({ app });
 
-    app.listen({ port: 4000 }, () =>
-      console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
-    );
-  } catch (error) {
-    console.error('Server startup error:', error);
+    // ✅ Fix: Proper CORS for Vite
+    const allowedOrigin = 'http://localhost:5173';
+    app.use(cors({
+      origin: allowedOrigin,
+      credentials: true,
+    }));
+
+    app.use(express.json());
+
+    // Apply Apollo middleware AFTER CORS
+    server.applyMiddleware({
+      app,
+      cors: false, // 🚨 disable Apollo's internal CORS handling!
+    });
+
+    const PORT = 4000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+    });
+
+  } catch (err) {
+    console.error('❌ Server startup error:', err);
   }
 };
 
