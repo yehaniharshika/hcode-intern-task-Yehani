@@ -25,7 +25,6 @@ function App() {
         { path: '/dashboard', element: <Dashboard /> },
         { path: '/uploads', element: <UploadPage/> },
         { path: '/updates', element: <UpdateVehiclesPage/> },
-        // { path: '/orders', element: <OrdersPage /> },
         { path: '/setting', element: <SettingPage /> },
         // { path: '/logout', element: <Logout /> },
       ],
