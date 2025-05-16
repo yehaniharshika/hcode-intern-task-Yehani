@@ -110,7 +110,7 @@ export const getAllVehicles = createAsyncThunk(
     return {
       vehicles,
       page,
-      total: vehicles.length // or fetch from backend if available
+      total: vehicles.length
     };
   }
 );
