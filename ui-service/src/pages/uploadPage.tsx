@@ -98,17 +98,45 @@ const UploadPage = () => {
                   marginTop: "40px",
                 }}
               >
-                <h4 className="mb-4">Upload Vehicle Data File</h4>
+                <h4
+                  className="mb-4"
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "20px",
+                  }}
+                >
+                  Upload Vehicle Data File
+                </h4>
                 <Form>
                   <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>Choose CSV or Excel File</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Choose CSV or Excel File
+                    </Form.Label>
                     <Form.Control
                       type="file"
                       onChange={handleFileChange}
                       accept=".csv, .xlsx"
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                      }}
                     />
                   </Form.Group>
-                  <Button type="submit" style={{ backgroundColor: "#283593" }}>
+                  <Button
+                    type="submit"
+                    style={{
+                      backgroundColor: "#283593",
+                      fontFamily: "'Montserrat', serif",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      fontWeight: "600",
+                    }}
+                  >
                     Upload
                   </Button>
                 </Form>
@@ -118,11 +146,33 @@ const UploadPage = () => {
             <Col md={6} sm={12}>
               <div
                 className="p-4 rounded shadow"
-                style={{ backgroundColor: "#FFFFFF",marginTop: "40px",}}
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  marginTop: "40px",
+                  border: "3px solid #3F51B5",
+                }}
               >
                 <Form>
+                  <h4
+                    className="mb-4"
+                    style={{
+                      fontFamily: "'Montserrat', serif",
+                      fontSize: "20px",
+                    }}
+                  >
+                    Vehicle Details Form
+                  </h4>
+                  <hr />
                   <Form.Group className="mb-3">
-                    <Form.Label>First Name</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      First Name
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       value={first_name}
@@ -130,7 +180,15 @@ const UploadPage = () => {
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label>Last Name</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Last Name
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       value={last_name}
@@ -138,40 +196,112 @@ const UploadPage = () => {
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Email
+                    </Form.Label>
                     <Form.Control
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </Form.Group>
+                  <Row className="mb-3">
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label
+                          style={{
+                            fontFamily: "'Montserrat', serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Car Make
+                        </Form.Label>
+                        <Form.Control
+                          style={{
+                            fontFamily: "'Montserrat', serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                          }}
+                          type="text"
+                          value={car_make}
+                          onChange={(e) => setCarMake(e.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label
+                          style={{
+                            fontFamily: "'Montserrat', serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Car Model
+                        </Form.Label>
+                        <Form.Control
+                          style={{
+                            fontFamily: "'Montserrat', serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                          }}
+                          type="text"
+                          value={car_model}
+                          onChange={(e) => setCarModel(e.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+
                   <Form.Group className="mb-3">
-                    <Form.Label>Car Make</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      VIN
+                    </Form.Label>
                     <Form.Control
-                      type="text"
-                      value={car_make}
-                      onChange={(e) => setCarMake(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Car Model</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={car_model}
-                      onChange={(e) => setCarModel(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>VIN</Form.Label>
-                    <Form.Control
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
                       type="text"
                       value={vin}
                       onChange={(e) => setVin(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label>Manufactured Date</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Manufactured Date
+                    </Form.Label>
                     <Form.Control
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
                       type="date"
                       value={manufactured_date}
                       onChange={(e) => {
@@ -190,11 +320,24 @@ const UploadPage = () => {
                   </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Form.Label>Age Of Vehicle</Form.Label>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Age Of Vehicle
+                    </Form.Label>
                     <Form.Control
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
                       type="text"
                       value={age_of_vehicle}
-                      readOnly 
+                      readOnly
                     />
                   </Form.Group>
 
@@ -202,7 +345,11 @@ const UploadPage = () => {
                     <Button
                       variant="primary"
                       onClick={handleAddVehicle}
-                      style={{ fontWeight: "bold" }}
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                      }}
                     >
                       Add Vehicle
                     </Button>

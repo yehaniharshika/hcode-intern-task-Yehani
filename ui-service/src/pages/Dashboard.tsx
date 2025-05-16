@@ -100,6 +100,10 @@ const Dashboard = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search"
+                        style={{
+                          fontFamily: "'Montserrat', serif",
+                          fontSize: "14px",
+                        }}
                       />
                       <InputGroup.Text>
                         <MdSearch />
@@ -117,14 +121,23 @@ const Dashboard = () => {
             </Col>
           </Row>
 
-          <h4 className="mb-4" style={{ color: "darkblue", fontWeight: "bold" }}>
+          <h4
+            className="mb-4"
+            style={{ color: "darkblue", fontWeight: "bold", fontFamily: "'Montserrat', serif",
+                    fontSize: "20px",marginTop:"30px"}}
+          >
             Vehicle Records
           </h4>
 
           <div className="table-responsive">
             <Table striped bordered hover responsive className="text-center">
               <thead className="bg-danger text-white">
-                <tr>
+                <tr
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                  }}
+                >
                   <th>First Name</th>
                   <th>Last Name</th>
                   <th>Email</th>
@@ -136,7 +149,12 @@ const Dashboard = () => {
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody
+                style={{
+                  fontFamily: "'Montserrat', serif",
+                  fontSize: "14px",
+                }}
+              >
                 {loading ? (
                   <tr>
                     <td colSpan={10}>Loading...</td>
@@ -162,6 +180,11 @@ const Dashboard = () => {
                             variant="warning"
                             size="sm"
                             onClick={() => handleEditVehicle(vehicle)}
+                            style={{
+                              fontFamily: "'Montserrat', serif",
+                              fontSize: "14px",
+                              fontWeight:"bold"
+                            }}
                           >
                             Edit
                           </Button>
@@ -171,6 +194,11 @@ const Dashboard = () => {
                             onClick={() =>
                               console.log("Delete clicked:", vehicle.id)
                             }
+                            style={{
+                              fontFamily: "'Montserrat', serif",
+                              fontSize: "14px",
+                              fontWeight:"bold"
+                            }}
                           >
                             Delete
                           </Button>
@@ -189,10 +217,19 @@ const Dashboard = () => {
               size="sm"
               disabled={page === 1}
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              style={{
+                  fontFamily: "'Montserrat', serif",
+                  fontSize: "14px",
+                  cursor:"pointer"
+                }}
             >
               Previous
             </Button>
-            <span>
+            <span style={{
+                  fontFamily: "'Montserrat', serif",
+                  fontSize: "13px",
+                  fontWeight:600
+                }}>
               Page {page} of {Math.ceil(total / itemsPerPage)}
             </span>
             <Button
@@ -204,6 +241,10 @@ const Dashboard = () => {
                   prev < Math.ceil(total / itemsPerPage) ? prev + 1 : prev
                 )
               }
+              style={{
+                  fontFamily: "'Montserrat', serif",
+                  fontSize: "14px",
+                }}
             >
               Next
             </Button>
@@ -218,7 +259,8 @@ const Dashboard = () => {
           <Modal.Body>
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>First Name</Form.Label>
+                <Form.Label style={{fontFamily: "'Montserrat', serif",
+                  fontSize: "14px",}}>First Name</Form.Label>
                 <Form.Control
                   type="text"
                   value={first_name}
@@ -227,7 +269,8 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label style={{fontFamily: "'Montserrat', serif",
+                  fontSize: "14px",}}>Last Name</Form.Label>
                 <Form.Control
                   type="text"
                   value={last_name}
@@ -280,7 +323,9 @@ const Dashboard = () => {
                     const selectedDate = e.target.value;
                     setManufacturedDate(selectedDate);
 
-                    const manufactureYear = new Date(selectedDate).getFullYear();
+                    const manufactureYear = new Date(
+                      selectedDate
+                    ).getFullYear();
                     const currentYear = new Date().getFullYear();
                     const age = currentYear - manufactureYear;
                     setAgeOfVehicle(age.toString());
