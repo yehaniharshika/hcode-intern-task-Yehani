@@ -1,4 +1,3 @@
-// api-service/src/resolvers/VehicleResolver.ts
 import { Resolver, Query, Mutation, Arg, ID, Int } from "type-graphql";
 
 import { AppDataSource } from "../config/data-source";

@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 
 const GRAPHQL_API = "http://localhost:4000/graphql";
@@ -77,8 +81,8 @@ export const getAllVehicles = createAsyncThunk(
   "vehicle/getByPage",
   async (page: number) => {
     const query = `
-      query GetVehicles($page: Int!) {
-        vehicles(page: $page) {
+      query GetAllVehicles($page: Int!) {
+        getAllVehicles(page: $page) {
           id
           first_name
           last_name
@@ -101,13 +105,16 @@ export const getAllVehicles = createAsyncThunk(
       throw new Error(response.data.errors[0].message);
     }
 
+    const vehicles = response.data.data.getAllVehicles;
+
     return {
-      vehicles: response.data.data.vehicles,
+      vehicles,
       page,
-      total: response.data.data.vehicles.length, // If backend doesn't return total count, use length
+      total: vehicles.length // or fetch from backend if available
     };
   }
 );
+
 
 const vehicleSlice = createSlice({
   name: "vehicle",

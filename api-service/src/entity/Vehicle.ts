@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
+import { DateResolver } from "graphql-scalars";
 
 @ObjectType()
 @Entity()
@@ -32,7 +33,7 @@ export class Vehicle extends BaseEntity {
   @Column()
   vin!: string;
 
-  @Field()
+  @Field(() => DateResolver, { nullable: true })
   @Column({ type: "date", nullable: true })
   manufactured_date!: Date;
 
