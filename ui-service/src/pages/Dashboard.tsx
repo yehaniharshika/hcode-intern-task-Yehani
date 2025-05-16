@@ -17,7 +17,13 @@ import { MdSearch } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import { Navigation } from "../components/Navigation";
 import type { AppDispatch, RootState } from "../store/store";
-import { getAllVehicles } from "../reducers/VehicleSlice";
+import {
+  deleteVehicle,
+  getAllVehicles,
+  updateVehicle,
+} from "../reducers/VehicleSlice";
+import Swal from "sweetalert2";
+import "../pages/style/alert.css";
 
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,9 +63,75 @@ const Dashboard = () => {
     setShowModal(true);
   };
 
+  const handleDeleteVehicle = (id: string) => {
+    Swal.fire({
+      title: "⚠️ Are you sure?",
+      html: '<p class="swal-text">Do you really want to delete this Vehicle?</p>',
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "No, Cancel",
+      background: "white",
+      color: "black",
+      confirmButtonColor: "red",
+      cancelButtonColor: "gray",
+      width: "450px",
+      customClass: {
+        title: "swal-title",
+        popup: "swal-popup",
+        confirmButton: "swal-button",
+        cancelButton: "swal-cancel-button",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteVehicle(id))
+          .unwrap()
+          .then(() => {
+            Swal.fire({
+              title: "✅ Deleted!",
+              html: '<p class="swal-text">Successfully deleted Vehicle.</p>',
+              icon: "success",
+              confirmButtonText: "OK",
+              background: "white",
+              color: "black",
+              confirmButtonColor: "green",
+              timer: 3000,
+              width: "450px",
+              customClass: {
+                title: "swal-title",
+                popup: "swal-popup",
+                confirmButton: "swal-button",
+              },
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: "❌ Error!",
+              html: '<p class="swal-text">Failed to delete Vehicle.</p>',
+              icon: "error",
+              confirmButtonText: "OK",
+              background: "white",
+              color: "black",
+              confirmButtonColor: "red",
+              timer: 3000,
+              width: "450px",
+              customClass: {
+                title: "swal-title",
+                popup: "swal-popup",
+                confirmButton: "swal-button",
+              },
+            });
+            console.error("Delete failed:", error);
+          });
+      }
+    });
+  };
+
   const handleUpdateVehicle = () => {
+    if (!selectedVehicle?.id) return;
+
     const updatedVehicle = {
-      ...selectedVehicle,
+      id: selectedVehicle.id, // must include id for update
       first_name,
       last_name,
       email,
@@ -69,13 +141,47 @@ const Dashboard = () => {
       manufactured_date,
       age_of_vehicle,
     };
-
-    console.log("Updated vehicle data:", updatedVehicle);
-
-    // TODO: Dispatch update action here
-    // dispatch(updateVehicle(updatedVehicle));
-
-    setShowModal(false);
+    dispatch(updateVehicle(updatedVehicle))
+      .unwrap()
+      .then(() => {
+        setShowModal(false);
+        setSelectedVehicle(null);
+        Swal.fire({
+          title: "✅ Success!",
+          html: '<p class="swal-text">Vehicle updated successfully.</p>', // Added class for styling
+          icon: "success",
+          confirmButtonText: "OK",
+          background: "white",
+          color: "black",
+          confirmButtonColor: "green",
+          timer: 3000, // Auto-close after 10 seconds
+          width: "450px", // Small window size
+          customClass: {
+            title: "swal-title",
+            popup: "swal-popup",
+            confirmButton: "swal-button",
+          },
+        });
+      })
+      .catch((err) => {
+        Swal.fire({
+                title: "❌ Error!",
+                html: '<p class="swal-text">Failed to update Vehicle.</p>', // Added class for styling
+                icon: "error",
+                confirmButtonText: "OK",
+                background: "white",
+                color: "black",
+                confirmButtonColor: "green",
+                timer: 3000, 
+                width: "420px",
+                customClass: {
+                    title: "swal-title",
+                    popup: "swal-popup",
+                    confirmButton: "swal-button",
+                }
+            });
+        console.error("Failed to update vehicle:", err);
+      });
   };
 
   const filteredVehicles = vehicles.filter((vehicle: any) =>
@@ -123,8 +229,13 @@ const Dashboard = () => {
 
           <h4
             className="mb-4"
-            style={{ color: "darkblue", fontWeight: "bold", fontFamily: "'Montserrat', serif",
-                    fontSize: "20px",marginTop:"30px"}}
+            style={{
+              color: "darkblue",
+              fontWeight: "bold",
+              fontFamily: "'Montserrat', serif",
+              fontSize: "20px",
+              marginTop: "30px",
+            }}
           >
             Vehicle Records
           </h4>
@@ -183,7 +294,7 @@ const Dashboard = () => {
                             style={{
                               fontFamily: "'Montserrat', serif",
                               fontSize: "14px",
-                              fontWeight:"bold"
+                              fontWeight: "bold",
                             }}
                           >
                             Edit
@@ -191,13 +302,11 @@ const Dashboard = () => {
                           <Button
                             variant="danger"
                             size="sm"
-                            onClick={() =>
-                              console.log("Delete clicked:", vehicle.id)
-                            }
+                            onClick={() => handleDeleteVehicle(vehicle.id)}
                             style={{
                               fontFamily: "'Montserrat', serif",
                               fontSize: "14px",
-                              fontWeight:"bold"
+                              fontWeight: "bold",
                             }}
                           >
                             Delete
@@ -218,18 +327,20 @@ const Dashboard = () => {
               disabled={page === 1}
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
               style={{
-                  fontFamily: "'Montserrat', serif",
-                  fontSize: "14px",
-                  cursor:"pointer"
-                }}
+                fontFamily: "'Montserrat', serif",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
             >
               Previous
             </Button>
-            <span style={{
-                  fontFamily: "'Montserrat', serif",
-                  fontSize: "13px",
-                  fontWeight:600
-                }}>
+            <span
+              style={{
+                fontFamily: "'Montserrat', serif",
+                fontSize: "13px",
+                fontWeight: 600,
+              }}
+            >
               Page {page} of {Math.ceil(total / itemsPerPage)}
             </span>
             <Button
@@ -242,9 +353,9 @@ const Dashboard = () => {
                 )
               }
               style={{
-                  fontFamily: "'Montserrat', serif",
-                  fontSize: "14px",
-                }}
+                fontFamily: "'Montserrat', serif",
+                fontSize: "14px",
+              }}
             >
               Next
             </Button>
@@ -259,8 +370,14 @@ const Dashboard = () => {
           <Modal.Body>
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label style={{fontFamily: "'Montserrat', serif",
-                  fontSize: "14px",}}>First Name</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                  }}
+                >
+                  First Name
+                </Form.Label>
                 <Form.Control
                   type="text"
                   value={first_name}
@@ -269,8 +386,14 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label style={{fontFamily: "'Montserrat', serif",
-                  fontSize: "14px",}}>Last Name</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                  }}
+                >
+                  Last Name
+                </Form.Label>
                 <Form.Control
                   type="text"
                   value={last_name}

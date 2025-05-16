@@ -1,3 +1,4 @@
+// src/reducers/VehicleSlice.ts
 import {
   createAsyncThunk,
   createSlice,
@@ -35,29 +36,12 @@ const initialState: VehicleState = {
   page: 1,
 };
 
-// Create Vehicle
 export const createVehicle = createAsyncThunk(
   "vehicle/create",
   async (vehicleData: Vehicle) => {
     const query = `
-      mutation CreateVehicle(
-        $first_name: String!,
-        $last_name: String!,
-        $email: String!,
-        $car_make: String!,
-        $car_model: String!,
-        $vin: String!,
-        $manufactured_date: String!
-      ) {
-        createVehicle(
-          first_name: $first_name,
-          last_name: $last_name,
-          email: $email,
-          car_make: $car_make,
-          car_model: $car_model,
-          vin: $vin,
-          manufactured_date: $manufactured_date
-        ) {
+      mutation CreateVehicle($first_name: String!, $last_name: String!, $email: String!, $car_make: String!, $car_model: String!, $vin: String!, $manufactured_date: String!) {
+        createVehicle(first_name: $first_name, last_name: $last_name, email: $email, car_make: $car_make, car_model: $car_model, vin: $vin, manufactured_date: $manufactured_date) {
           id
         }
       }
@@ -76,7 +60,6 @@ export const createVehicle = createAsyncThunk(
   }
 );
 
-// Get paginated vehicles
 export const getAllVehicles = createAsyncThunk(
   "vehicle/getByPage",
   async (page: number) => {
@@ -115,31 +98,12 @@ export const getAllVehicles = createAsyncThunk(
   }
 );
 
-// Update Vehicle
 export const updateVehicle = createAsyncThunk(
   "vehicle/update",
   async (vehicleData: Vehicle) => {
     const query = `
-      mutation UpdateVehicle(
-        $id: ID!,
-        $first_name: String,
-        $last_name: String,
-        $email: String,
-        $car_make: String,
-        $car_model: String,
-        $vin: String,
-        $manufactured_date: String
-      ) {
-        updateVehicle(
-          id: $id,
-          first_name: $first_name,
-          last_name: $last_name,
-          email: $email,
-          car_make: $car_make,
-          car_model: $car_model,
-          vin: $vin,
-          manufactured_date: $manufactured_date
-        ) {
+      mutation UpdateVehicle($id: ID!, $first_name: String, $last_name: String, $email: String, $car_make: String, $car_model: String, $vin: String, $manufactured_date: String) {
+        updateVehicle(id: $id, first_name: $first_name, last_name: $last_name, email: $email, car_make: $car_make, car_model: $car_model, vin: $vin, manufactured_date: $manufactured_date) {
           id
           first_name
           last_name
@@ -166,7 +130,6 @@ export const updateVehicle = createAsyncThunk(
   }
 );
 
-// Delete Vehicle
 export const deleteVehicle = createAsyncThunk(
   "vehicle/delete",
   async (id: string) => {
@@ -203,9 +166,8 @@ const vehicleSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createVehicle.fulfilled, (state, action) => {
+      .addCase(createVehicle.fulfilled, (state) => {
         state.loading = false;
-        // Optionally you can push new vehicle to list here
       })
       .addCase(createVehicle.rejected, (state, action) => {
         state.loading = false;
