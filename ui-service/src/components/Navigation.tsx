@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AiOutlineAppstore } from "react-icons/ai";
-import { FaCarSide, FaFileMedical, FaGear } from "react-icons/fa6";
+import { FaCarSide, FaGear } from "react-icons/fa6";
 import { FaSignOutAlt } from "react-icons/fa";
 import { RiCloseFill, RiMenu3Line } from "react-icons/ri";
 import { GrDocumentDownload } from "react-icons/gr";

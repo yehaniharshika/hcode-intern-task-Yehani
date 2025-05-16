@@ -4,6 +4,8 @@ import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { createVehicle } from "../reducers/VehicleSlice";
 import type { AppDispatch } from "../store/store";
+import Swal from "sweetalert2";
+import "../pages/style/alert.css";
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -52,7 +54,6 @@ const UploadPage = () => {
     )
       .unwrap()
       .then(() => {
-        alert("Vehicle added successfully!");
         console.log("success");
         console.log(
           first_name,
@@ -63,6 +64,22 @@ const UploadPage = () => {
           vin,
           manufactured_date
         );
+        Swal.fire({
+          title: "✅ Success!",
+          html: '<p class="swal-text">Vehicle saved successfully.</p>',
+          icon: "success",
+          confirmButtonText: "OK",
+          background: "white",
+          color: "black",
+          confirmButtonColor: "green",
+          timer: 3000, // Auto-close after 10 seconds
+          width: "450px", // Small window size
+          customClass: {
+            title: "swal-title",
+            popup: "swal-popup",
+            confirmButton: "swal-button",
+          },
+        });
         setFirstName("");
         setLastName("");
         setEmail("");
@@ -168,7 +185,7 @@ const UploadPage = () => {
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       First Name
@@ -176,6 +193,11 @@ const UploadPage = () => {
                     <Form.Control
                       type="text"
                       value={first_name}
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
                       onChange={(e) => setFirstName(e.target.value)}
                     />
                   </Form.Group>
@@ -184,13 +206,18 @@ const UploadPage = () => {
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       Last Name
                     </Form.Label>
                     <Form.Control
                       type="text"
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
                       value={last_name}
                       onChange={(e) => setLastName(e.target.value)}
                     />
@@ -200,7 +227,7 @@ const UploadPage = () => {
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       Email
@@ -223,7 +250,7 @@ const UploadPage = () => {
                           style={{
                             fontFamily: "'Montserrat', serif",
                             fontSize: "14px",
-                            fontWeight: 500,
+                            fontWeight: 600,
                           }}
                         >
                           Car Make
@@ -246,7 +273,7 @@ const UploadPage = () => {
                           style={{
                             fontFamily: "'Montserrat', serif",
                             fontSize: "14px",
-                            fontWeight: 500,
+                            fontWeight: 600,
                           }}
                         >
                           Car Model
@@ -270,7 +297,7 @@ const UploadPage = () => {
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       VIN
@@ -291,7 +318,7 @@ const UploadPage = () => {
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       Manufactured Date
@@ -324,7 +351,7 @@ const UploadPage = () => {
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       Age Of Vehicle
