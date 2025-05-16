@@ -166,6 +166,28 @@ export const updateVehicle = createAsyncThunk(
   }
 );
 
+// Delete Vehicle
+export const deleteVehicle = createAsyncThunk(
+  "vehicle/delete",
+  async (id: string) => {
+    const query = `
+      mutation DeleteVehicle($id: ID!) {
+        deleteVehicle(id: $id)
+      }
+    `;
+
+    const response = await axios.post(GRAPHQL_API, {
+      query,
+      variables: { id },
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return id;
+  }
+);
 
 const vehicleSlice = createSlice({
   name: "vehicle",
