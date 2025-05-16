@@ -110,8 +110,59 @@ export const getAllVehicles = createAsyncThunk(
     return {
       vehicles,
       page,
-      total: vehicles.length
+      total: vehicles.length,
     };
+  }
+);
+
+// Update Vehicle
+export const updateVehicle = createAsyncThunk(
+  "vehicle/update",
+  async (vehicleData: Vehicle) => {
+    const query = `
+      mutation UpdateVehicle(
+        $id: ID!,
+        $first_name: String,
+        $last_name: String,
+        $email: String,
+        $car_make: String,
+        $car_model: String,
+        $vin: String,
+        $manufactured_date: String
+      ) {
+        updateVehicle(
+          id: $id,
+          first_name: $first_name,
+          last_name: $last_name,
+          email: $email,
+          car_make: $car_make,
+          car_model: $car_model,
+          vin: $vin,
+          manufactured_date: $manufactured_date
+        ) {
+          id
+          first_name
+          last_name
+          email
+          car_make
+          car_model
+          vin
+          manufactured_date
+          age_of_vehicle
+        }
+      }
+    `;
+
+    const response = await axios.post(GRAPHQL_API, {
+      query,
+      variables: vehicleData,
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.updateVehicle;
   }
 );
 
@@ -152,6 +203,36 @@ const vehicleSlice = createSlice({
       .addCase(getAllVehicles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch vehicles";
+      })
+
+      .addCase(updateVehicle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateVehicle.fulfilled, (state, action) => {
+        state.loading = false;
+        const updated = action.payload;
+        const index = state.vehicles.findIndex((v) => v.id === updated.id);
+        if (index !== -1) {
+          state.vehicles[index] = updated;
+        }
+      })
+      .addCase(updateVehicle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to update vehicle";
+      })
+
+      .addCase(deleteVehicle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteVehicle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.vehicles = state.vehicles.filter((v) => v.id !== action.payload);
+      })
+      .addCase(deleteVehicle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to delete vehicle";
       });
   },
 });
