@@ -36,7 +36,7 @@ export const Navigation = () => {
     <section className="flex">
       {/* Menu Toggle Button (only for small screens) */}
       {isMobile && !open && (
-        <div className="fixed top-0 left-0 w-full bg-[#6F1E51] p-3 flex justify-between items-center z-50">
+        <div className="fixed top-0 left-0 w-full bg-[#3F51B5] p-3 flex justify-between items-center z-50">
           <RiMenu3Line
             size={26}
             className="cursor-pointer text-white"

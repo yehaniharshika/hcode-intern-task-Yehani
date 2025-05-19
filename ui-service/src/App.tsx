@@ -24,7 +24,7 @@ function App() {
         { path: '/login', element: <Login /> },
         { path: '/dashboard', element: <Dashboard /> },
         { path: '/uploads', element: <UploadPage/> },
-        { path: '/updates', element: <UpdateVehiclesPage/> },
+        { path: '/reports', element: <UpdateVehiclesPage/> },
         { path: '/setting', element: <SettingPage /> },
         // { path: '/logout', element: <Logout /> },
       ],

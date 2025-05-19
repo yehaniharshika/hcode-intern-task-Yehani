@@ -26,6 +26,7 @@ interface VehicleState {
   error: string | null;
   total: number;
   page: number;
+  importSuccess: boolean | null;
 }
 
 const initialState: VehicleState = {
@@ -34,6 +35,7 @@ const initialState: VehicleState = {
   error: null,
   total: 0,
   page: 1,
+  importSuccess: null,
 };
 
 export const createVehicle = createAsyncThunk(
@@ -152,12 +154,37 @@ export const deleteVehicle = createAsyncThunk(
   }
 );
 
+export const importVehicles = createAsyncThunk(
+  "vehicle/import",
+  async (filePath: string) => {
+    const query = `
+      mutation ImportVehicles($filePath: String!) {
+        importVehicles(filePath: $filePath)
+      }
+    `;
+
+    const response = await axios.post(GRAPHQL_API, {
+      query,
+      variables: { filePath },
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.importVehicles;
+  }
+);
+
 const vehicleSlice = createSlice({
   name: "vehicle",
   initialState,
   reducers: {
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
+    },
+    resetImportStatus: (state) => {
+      state.importSuccess = null;
     },
   },
   extraReducers: (builder) => {
@@ -166,9 +193,11 @@ const vehicleSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+
       .addCase(createVehicle.fulfilled, (state) => {
         state.loading = false;
       })
+      
       .addCase(createVehicle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to create vehicle";
@@ -178,12 +207,14 @@ const vehicleSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+
       .addCase(getAllVehicles.fulfilled, (state, action) => {
         state.loading = false;
         state.vehicles = action.payload.vehicles;
         state.page = action.payload.page;
         state.total = action.payload.total;
       })
+
       .addCase(getAllVehicles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch vehicles";
@@ -193,6 +224,7 @@ const vehicleSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+
       .addCase(updateVehicle.fulfilled, (state, action) => {
         state.loading = false;
         const updated = action.payload;
@@ -201,6 +233,7 @@ const vehicleSlice = createSlice({
           state.vehicles[index] = updated;
         }
       })
+
       .addCase(updateVehicle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to update vehicle";
@@ -210,13 +243,34 @@ const vehicleSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+
       .addCase(deleteVehicle.fulfilled, (state, action) => {
         state.loading = false;
         state.vehicles = state.vehicles.filter((v) => v.id !== action.payload);
       })
+
       .addCase(deleteVehicle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to delete vehicle";
+      });
+
+    builder
+      .addCase(importVehicles.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.importSuccess = null;
+      })
+
+      .addCase(importVehicles.fulfilled, (state, action) => {
+        state.loading = false;
+        state.importSuccess = action.payload;
+         console.log("✅ Import successful:", action.payload);
+      })
+
+      .addCase(importVehicles.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to import vehicles";
+        state.importSuccess = false;
       });
   },
 });

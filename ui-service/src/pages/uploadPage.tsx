@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { createVehicle } from "../reducers/VehicleSlice";
+import { createVehicle, importVehicles } from "../reducers/VehicleSlice";
 import type { AppDispatch } from "../store/store";
 import Swal from "sweetalert2";
 import "../pages/style/alert.css";
@@ -17,12 +17,25 @@ const UploadPage = () => {
   const [vin, setVin] = useState("");
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
-
+  const [filePath, setFilePath] = useState("");
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+
+  const handleImport = async () => {
+    if (!filePath) {
+      Swal.fire("Please enter a valid file path.");
+      return;
+    }
+
+    try {
+      const result = await dispatch(importVehicles(filePath)).unwrap();
+      if (result) {
+        Swal.fire("✅ Import successful!");
+      } else {
+        Swal.fire("❌ Import failed.");
+      }
+    } catch (error: any) {
+      Swal.fire(`Error: ${error.message}`);
     }
   };
 
@@ -72,8 +85,8 @@ const UploadPage = () => {
           background: "white",
           color: "black",
           confirmButtonColor: "green",
-          timer: 3000, // Auto-close after 10 seconds
-          width: "450px", // Small window size
+          timer: 3000,
+          width: "450px",
           customClass: {
             title: "swal-title",
             popup: "swal-popup",
@@ -115,6 +128,61 @@ const UploadPage = () => {
                   marginTop: "40px",
                 }}
               >
+                                <h4
+                  className="mb-4"
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "20px",
+                  }}
+                >
+                  Upload Vehicle Data File
+                </h4>
+                 <Form>
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Set CSV or Excel File Path
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="/ uploads / vehicles.csv"
+                      value={filePath}
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                      }}
+                      onChange={(e) => setFilePath(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Button
+                    type="submit"
+                    style={{
+                      backgroundColor: "#283593",
+                      fontFamily: "'Montserrat', serif",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      fontWeight: "600",
+                    }}
+                    onClick={handleImport}
+                  >
+                    Import
+                  </Button>
+                 </Form>
+              </div>
+            </Col>
+            {/* <Col md={6} sm={12} className="mb-4">
+              <div
+                className="p-4 rounded shadow"
+                style={{
+                  backgroundColor: "#3F51B5",
+                  color: "white",
+                  marginTop: "40px",
+                }}
+              >
                 <h4
                   className="mb-4"
                   style={{
@@ -136,12 +204,13 @@ const UploadPage = () => {
                     </Form.Label>
                     <Form.Control
                       type="file"
-                      onChange={handleFileChange}
                       accept=".csv, .xlsx"
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
                       }}
+                      value={filePath}
+                      onChange={(e) => setFilePath(e.target.value)}
                     />
                   </Form.Group>
                   <Button
@@ -153,12 +222,32 @@ const UploadPage = () => {
                       cursor: "pointer",
                       fontWeight: "600",
                     }}
+                    onClick={handleImport}
                   >
                     Upload
                   </Button>
                 </Form>
               </div>
-            </Col>
+            </Col> */}
+            {/* <Container className="mt-5">
+              <h2>Import Vehicles</h2>
+              <Row className="mt-4">
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label>File Path (on server)</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="/uploads/vehicles.csv"
+                      value={filePath}
+                      onChange={(e) => setFilePath(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Button className="mt-3" onClick={handleImport}>
+                    Import Vehicles
+                  </Button>
+                </Col>
+              </Row>
+            </Container> */}
 
             <Col md={6} sm={12}>
               <div

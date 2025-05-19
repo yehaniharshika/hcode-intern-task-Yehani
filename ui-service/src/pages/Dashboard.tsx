@@ -26,7 +26,7 @@ import "../pages/style/alert.css";
 
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { vehicles, loading, error, total } = useSelector(
+  const { vehicles, loading, total } = useSelector(
     (state: RootState) => state.vehicle
   );
 

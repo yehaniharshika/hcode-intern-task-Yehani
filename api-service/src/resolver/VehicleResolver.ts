@@ -11,8 +11,7 @@ export class VehicleResolver {
   // Get all vehicles with pagination
   @Query(() => [Vehicle])
   async getAllVehicles(
-    @Arg("page", () => Int, { defaultValue: 1 }) page: number,
-  
+    @Arg("page", () => Int, { defaultValue: 1 }) page: number
   ): Promise<Vehicle[]> {
     const take = 100;
     const skip = (page - 1) * take;
