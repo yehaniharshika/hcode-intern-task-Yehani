@@ -27,6 +27,7 @@ interface VehicleState {
   total: number;
   page: number;
   importSuccess: boolean | null;
+  exportSuccess: boolean | null;
 }
 
 const initialState: VehicleState = {
@@ -36,6 +37,7 @@ const initialState: VehicleState = {
   total: 0,
   page: 1,
   importSuccess: null,
+  exportSuccess: null,
 };
 
 export const createVehicle = createAsyncThunk(
@@ -154,6 +156,7 @@ export const deleteVehicle = createAsyncThunk(
   }
 );
 
+// import vehicles
 export const importVehicles = createAsyncThunk(
   "vehicle/import",
   async (filePath: string) => {
@@ -173,6 +176,29 @@ export const importVehicles = createAsyncThunk(
     }
 
     return response.data.data.importVehicles;
+  }
+);
+
+// export Vehicles by Age
+export const exportVehicles = createAsyncThunk(
+  "vehicle/export",
+  async (age: number) => {
+    const query = `
+      mutation ExportVehicles($age: Int!) {
+        exportVehicles(age: $age)
+      }
+    `;
+
+    const response = await axios.post(GRAPHQL_API, {
+      query,
+      variables: { age },
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.exportVehicles; // Should be a boolean
   }
 );
 
@@ -197,7 +223,7 @@ const vehicleSlice = createSlice({
       .addCase(createVehicle.fulfilled, (state) => {
         state.loading = false;
       })
-      
+
       .addCase(createVehicle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to create vehicle";
@@ -252,9 +278,8 @@ const vehicleSlice = createSlice({
       .addCase(deleteVehicle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to delete vehicle";
-      });
+      })
 
-    builder
       .addCase(importVehicles.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -264,13 +289,28 @@ const vehicleSlice = createSlice({
       .addCase(importVehicles.fulfilled, (state, action) => {
         state.loading = false;
         state.importSuccess = action.payload;
-         console.log("✅ Import successful:", action.payload);
+        console.log("✅ Import successful:", action.payload);
       })
 
       .addCase(importVehicles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to import vehicles";
         state.importSuccess = false;
+      })
+
+      .addCase(exportVehicles.pending, (state) => {
+        state.loading = true;
+        state.exportSuccess = null;
+        state.error = null;
+      })
+      .addCase(exportVehicles.fulfilled, (state, action) => {
+        state.loading = false;
+        state.exportSuccess = action.payload;
+      })
+      .addCase(exportVehicles.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to export vehicles";
+        state.exportSuccess = false;
       });
   },
 });
