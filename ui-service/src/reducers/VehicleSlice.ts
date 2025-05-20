@@ -156,19 +156,32 @@ export const deleteVehicle = createAsyncThunk(
   }
 );
 
-// import vehicles
+//import vehicles file
 export const importVehicles = createAsyncThunk(
   "vehicle/import",
-  async (filePath: string) => {
-    const query = `
-      mutation ImportVehicles($filePath: String!) {
-        importVehicles(filePath: $filePath)
-      }
-    `;
+  async (file: File) => {
+    const formData = new FormData();
 
-    const response = await axios.post(GRAPHQL_API, {
-      query,
-      variables: { filePath },
+    // GraphQL multipart request spec
+    formData.append("operations", JSON.stringify({
+      query: `
+        mutation ImportVehicles($file: Upload!) {
+          importVehicles(file: $file)
+        }
+      `,
+      variables: { file: null },
+    }));
+
+    formData.append("map", JSON.stringify({
+      "0": ["variables.file"],
+    }));
+
+    formData.append("0", file);
+
+    const response = await axios.post(GRAPHQL_API, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     if (response.data.errors) {
@@ -178,6 +191,7 @@ export const importVehicles = createAsyncThunk(
     return response.data.data.importVehicles;
   }
 );
+
 
 export const exportVehicles = createAsyncThunk(
   "vehicle/export",
