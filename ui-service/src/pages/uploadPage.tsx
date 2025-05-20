@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createVehicle, importVehicles } from "../reducers/VehicleSlice";
-import type { AppDispatch } from "../store/store";
+import type { AppDispatch, RootState } from "../store/store";
 import Swal from "sweetalert2";
 import "../pages/style/alert.css";
-import { gql, useMutation } from "@apollo/client";
-
-const IMPORT_VEHICLES = gql`
-  mutation ImportVehicles($filePath: String!) {
-    importVehicles(filePath: $filePath)
-  }
-`;
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -25,24 +18,27 @@ const UploadPage = () => {
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
   const [filePath, setFilePath] = useState("");
-  const [importVehicles] = useMutation(IMPORT_VEHICLES);
+  const importSuccess = useSelector((state: RootState) => state.vehicle.importSuccess);
+
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleImport = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!filePath) {
-      Swal.fire("Please select a file to import.");
+   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+   const handleImport = async () => {
+    if (!file) {
+      Swal.fire("Please select a file first");
       return;
     }
+
     try {
-      const { data } = await importVehicles({ variables: { filePath } });
-      if (data.importVehicles) {
-        Swal.fire("✅ Import successful!");
-      } else {
-        Swal.fire("❌ Import failed.");
-      }
-    } catch (error: any) {
-      Swal.fire(`Error: ${error.message}`);
+      await dispatch(importVehicles(file)).unwrap();
+      Swal.fire("✅ Success", "File imported successfully!", "success");
+    } catch (error) {
+      Swal.fire("❌ Error", (error as Error).message || "Failed to import file", "error");
     }
   };
 
@@ -144,7 +140,7 @@ const UploadPage = () => {
                 >
                   Upload Vehicle Data File
                 </h4>
-                <Form onSubmit={handleImport}>
+                <Form>
                   <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label
                       style={{
@@ -161,18 +157,11 @@ const UploadPage = () => {
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
                       }}
-                      onChange={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        const selectedFile = target.files?.[0];
-                        if (selectedFile) {
-                          setFilePath(selectedFile.name);
-                          setFile(selectedFile); // optional: if you also want to keep the actual file
-                        }
-                      }}
+                      onChange={handleFileChange}
                     />
                   </Form.Group>
                   <Button
-                    type="submit"
+                    onClick={handleImport}
                     style={{
                       backgroundColor: "#283593",
                       fontFamily: "'Montserrat', serif",
