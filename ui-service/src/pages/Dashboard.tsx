@@ -164,21 +164,21 @@ const Dashboard = () => {
       })
       .catch((err) => {
         Swal.fire({
-                title: "❌ Error!",
-                html: '<p class="swal-text">Failed to update Vehicle.</p>', // Added class for styling
-                icon: "error",
-                confirmButtonText: "OK",
-                background: "white",
-                color: "black",
-                confirmButtonColor: "green",
-                timer: 3000, 
-                width: "420px",
-                customClass: {
-                    title: "swal-title",
-                    popup: "swal-popup",
-                    confirmButton: "swal-button",
-                }
-            });
+          title: "❌ Error!",
+          html: '<p class="swal-text">Failed to update Vehicle.</p>', // Added class for styling
+          icon: "error",
+          confirmButtonText: "OK",
+          background: "white",
+          color: "black",
+          confirmButtonColor: "green",
+          timer: 3000,
+          width: "420px",
+          customClass: {
+            title: "swal-title",
+            popup: "swal-popup",
+            confirmButton: "swal-button",
+          },
+        });
         console.error("Failed to update vehicle:", err);
       });
   };
@@ -200,17 +200,31 @@ const Dashboard = () => {
               >
                 <Row className="align-items-center">
                   <Col md={6}>
-                    <InputGroup>
+                    <InputGroup
+                      style={{
+                        border: "2px solid gray",
+                        borderRadius: "5px",
+                        overflow: "hidden", // ensures border is not broken by inner elements
+                      }}
+                    >
                       <FormControl
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search"
+                        placeholder="Search.."
                         style={{
                           fontFamily: "'Montserrat', serif",
                           fontSize: "14px",
+                          border: "none", // remove default inner border
+                          boxShadow: "none", 
+                          color:"black"
                         }}
                       />
-                      <InputGroup.Text>
+                      <InputGroup.Text
+                        style={{
+                          backgroundColor: "#fff",
+                          border: "none", // remove inner border
+                        }}
+                      >
                         <MdSearch />
                       </InputGroup.Text>
                     </InputGroup>
