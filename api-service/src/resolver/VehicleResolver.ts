@@ -1,14 +1,15 @@
 import { Resolver, Query, Mutation, Arg, ID, Int } from "type-graphql";
-
 import { AppDataSource } from "../config/data-source";
 import { jobQueue } from "../queues/jobQueue";
 import { Vehicle } from "../entity/Vehicle";
+import { createWriteStream } from "fs";
+import path from "path";
+import { FileUpload, GraphQLUpload } from "graphql-upload-minimal";
 
 @Resolver(Vehicle)
 export class VehicleResolver {
   private vehicleRepository = AppDataSource.getRepository(Vehicle);
 
-  // Get all vehicles with pagination
   @Query(() => [Vehicle])
   async getAllVehicles(
     @Arg("page", () => Int, { defaultValue: 1 }) page: number
@@ -93,15 +94,42 @@ export class VehicleResolver {
   }
 
   @Mutation(() => Boolean)
-  async importVehicles(@Arg("filePath") filePath: string): Promise<boolean> {
-    console.log("Import job enqueued for file:", filePath); // Add this
-    await jobQueue.add("import", { filePath });
-    return true;
+  async importVehicles(
+    @Arg("file", () => GraphQLUpload) file: FileUpload
+  ): Promise<boolean> {
+    const { createReadStream, filename } = await file;
+
+    const uploadPath = path.join(__dirname, "../../uploads", filename);
+
+    return new Promise((resolve, reject) => {
+      const stream = createReadStream()
+        .pipe(createWriteStream(uploadPath))
+        .on("finish", async () => {
+          console.log("File uploaded:", uploadPath);
+
+          // 🔥 ADD THIS LINE: Queue the import job
+          await jobQueue.add("import", { filePath: uploadPath });
+
+          resolve(true);
+        })
+        .on("error", (err: any) => {
+          console.error("Upload failed:", err);
+          reject(false);
+        });
+    });
   }
 
-  @Mutation(() => Boolean)
-  async exportVehicles(@Arg("age", () => Int) age: number): Promise<boolean> {
-    await jobQueue.add("export", { age });
-    return true;
+  @Mutation(() => String) // Return string (file name or path)
+  async exportVehicles(@Arg("age", () => Int) age: number): Promise<string> {
+    const fileName = `vehicles_age_${age}_${Date.now()}.csv`;
+
+    // Add job to the queue with file path
+    await jobQueue.add("export", {
+      age,
+      fileName,
+      filePath: path.join(__dirname, "../../exports", fileName),
+    });
+
+    return fileName; // Return the file name to frontend
   }
 }
