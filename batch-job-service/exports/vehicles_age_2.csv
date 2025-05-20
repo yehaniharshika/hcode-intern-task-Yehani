@@ -2,12 +2,7 @@ first_name,last_name,email,car_make,car_model,vin,manufactured_date,age_of_vehic
 Yehani,Pamunuwa,yeha@gmail.com,Toyota,Corolla,APMN1234,2022-01-16,3
 Jane,Smith,jane@example.com,Ford,Focus,1FAHP3F26CL123456,2017-03-10,8
 gayan,Pamunuwa,gayan@gmail.com,Toyota,Frog,WERT567UI,2019-06-08,6
+Yehani,silva,silva@gmail.com,uiii,pop,pop000,2021-01-01,4
 John,Doe,john@example.com,Toyota,Corolla,1HGCM82633A123456,2015-06-01,10
 Jane,Smith,jane@example.com,Ford,Focus,1FAHP3F26CL123456,2017-03-10,8
 Bob,Brown,bob@example.com,Honda,Civic,2HGES16555H123456,2012-11-15,13
-John,Doe,john@example.com,Toyota,Corolla,1HGCM82633A123456,2015-06-01,10
-Jane,Smith,jane@example.com,Ford,Focus,1FAHP3F26CL123456,2017-03-10,8
-Bob,Brown,bob@example.com,Honda,Civic,2HGES16555H123456,2012-11-15,13
-John,Doe,john@example.com,Toyota,Corolla,1HGCM82633A123456,1970-01-01,55
-Jane,Smith,jane@example.com,Honda,Civic,2HGFB2F5XCH123456,1970-01-01,55
-Alice,Johnson,alice@example.com,Ford,Focus,3FAHP0HA6AR123456,1970-01-01,55

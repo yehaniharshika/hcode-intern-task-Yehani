@@ -179,13 +179,15 @@ export const importVehicles = createAsyncThunk(
   }
 );
 
-// export Vehicles by Age
 export const exportVehicles = createAsyncThunk(
   "vehicle/export",
   async (age: number) => {
     const query = `
       mutation ExportVehicles($age: Int!) {
-        exportVehicles(age: $age)
+        exportVehicles(age: $age) {
+          success
+          fileUrl
+        }
       }
     `;
 
@@ -198,7 +200,8 @@ export const exportVehicles = createAsyncThunk(
       throw new Error(response.data.errors[0].message);
     }
 
-    return response.data.data.exportVehicles; // Should be a boolean
+    const result = response.data.data.exportVehicles;
+    return result; // return both success and fileUrl
   }
 );
 
@@ -305,7 +308,7 @@ const vehicleSlice = createSlice({
       })
       .addCase(exportVehicles.fulfilled, (state, action) => {
         state.loading = false;
-        state.exportSuccess = action.payload;
+        state.exportSuccess = action.payload.success;
       })
       .addCase(exportVehicles.rejected, (state, action) => {
         state.loading = false;

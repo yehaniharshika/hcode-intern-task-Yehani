@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Arg, ID, Int } from "type-graphql";
 import { AppDataSource } from "../config/data-source";
 import { jobQueue } from "../queues/jobQueue";
 import { Vehicle } from "../entity/Vehicle";
+
 import { createWriteStream } from "fs";
 import path from "path";
 import { FileUpload, GraphQLUpload } from "graphql-upload-minimal";
@@ -102,14 +103,12 @@ export class VehicleResolver {
     const uploadPath = path.join(__dirname, "../../uploads", filename);
 
     return new Promise((resolve, reject) => {
-      const stream = createReadStream()
+      createReadStream()
         .pipe(createWriteStream(uploadPath))
         .on("finish", async () => {
           console.log("File uploaded:", uploadPath);
-
-          // 🔥 ADD THIS LINE: Queue the import job
+          //Queue the import job
           await jobQueue.add("import", { filePath: uploadPath });
-
           resolve(true);
         })
         .on("error", (err: any) => {
@@ -119,17 +118,9 @@ export class VehicleResolver {
     });
   }
 
-  @Mutation(() => String) // Return string (file name or path)
-  async exportVehicles(@Arg("age", () => Int) age: number): Promise<string> {
-    const fileName = `vehicles_age_${age}_${Date.now()}.csv`;
-
-    // Add job to the queue with file path
-    await jobQueue.add("export", {
-      age,
-      fileName,
-      filePath: path.join(__dirname, "../../exports", fileName),
-    });
-
-    return fileName; // Return the file name to frontend
+  @Mutation(() => Boolean)
+  async exportVehicles(@Arg("age", () => Int) age: number): Promise<boolean> {
+    await jobQueue.add("export", { age });
+    return true;
   }
 }

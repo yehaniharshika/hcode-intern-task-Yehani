@@ -6,6 +6,13 @@ import { createVehicle, importVehicles } from "../reducers/VehicleSlice";
 import type { AppDispatch } from "../store/store";
 import Swal from "sweetalert2";
 import "../pages/style/alert.css";
+import { gql, useMutation } from "@apollo/client";
+
+const IMPORT_VEHICLES = gql`
+  mutation ImportVehicles($filePath: String!) {
+    importVehicles(filePath: $filePath)
+  }
+`;
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -18,18 +25,18 @@ const UploadPage = () => {
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
   const [filePath, setFilePath] = useState("");
+  const [importVehicles] = useMutation(IMPORT_VEHICLES);
   const dispatch = useDispatch<AppDispatch>();
 
-
-  const handleImport = async () => {
+  const handleImport = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!filePath) {
-      Swal.fire("Please enter a valid file path.");
+      Swal.fire("Please select a file to import.");
       return;
     }
-
     try {
-      const result = await dispatch(importVehicles(filePath)).unwrap();
-      if (result) {
+      const { data } = await importVehicles({ variables: { filePath } });
+      if (data.importVehicles) {
         Swal.fire("✅ Import successful!");
       } else {
         Swal.fire("❌ Import failed.");
@@ -128,7 +135,7 @@ const UploadPage = () => {
                   marginTop: "40px",
                 }}
               >
-                                <h4
+                <h4
                   className="mb-4"
                   style={{
                     fontFamily: "'Montserrat', serif",
@@ -137,7 +144,7 @@ const UploadPage = () => {
                 >
                   Upload Vehicle Data File
                 </h4>
-                 <Form>
+                <Form onSubmit={handleImport}>
                   <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label
                       style={{
@@ -145,17 +152,23 @@ const UploadPage = () => {
                         fontSize: "14px",
                       }}
                     >
-                      Set CSV or Excel File Path
+                      Choose CSV or Excel File
                     </Form.Label>
                     <Form.Control
-                      type="text"
-                      placeholder="/ uploads / vehicles.csv"
-                      value={filePath}
+                      type="file"
+                      accept=".csv, .xlsx"
                       style={{
                         fontFamily: "'Montserrat', serif",
                         fontSize: "14px",
                       }}
-                      onChange={(e) => setFilePath(e.target.value)}
+                      onChange={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        const selectedFile = target.files?.[0];
+                        if (selectedFile) {
+                          setFilePath(selectedFile.name);
+                          setFile(selectedFile); // optional: if you also want to keep the actual file
+                        }
+                      }}
                     />
                   </Form.Group>
                   <Button
@@ -167,11 +180,10 @@ const UploadPage = () => {
                       cursor: "pointer",
                       fontWeight: "600",
                     }}
-                    onClick={handleImport}
                   >
-                    Import
+                    Upload
                   </Button>
-                 </Form>
+                </Form>
               </div>
             </Col>
             {/* <Col md={6} sm={12} className="mb-4">
