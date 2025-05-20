@@ -163,18 +163,24 @@ export const importVehicles = createAsyncThunk(
     const formData = new FormData();
 
     // GraphQL multipart request spec
-    formData.append("operations", JSON.stringify({
-      query: `
+    formData.append(
+      "operations",
+      JSON.stringify({
+        query: `
         mutation ImportVehicles($file: Upload!) {
           importVehicles(file: $file)
         }
       `,
-      variables: { file: null },
-    }));
+        variables: { file: null },
+      })
+    );
 
-    formData.append("map", JSON.stringify({
-      "0": ["variables.file"],
-    }));
+    formData.append(
+      "map",
+      JSON.stringify({
+        "0": ["variables.file"],
+      })
+    );
 
     formData.append("0", file);
 
@@ -192,16 +198,12 @@ export const importVehicles = createAsyncThunk(
   }
 );
 
-
 export const exportVehicles = createAsyncThunk(
   "vehicle/export",
   async (age: number) => {
     const query = `
       mutation ExportVehicles($age: Int!) {
-        exportVehicles(age: $age) {
-          success
-          fileUrl
-        }
+        exportVehicles(age: $age)
       }
     `;
 
@@ -214,8 +216,10 @@ export const exportVehicles = createAsyncThunk(
       throw new Error(response.data.errors[0].message);
     }
 
-    const result = response.data.data.exportVehicles;
-    return result; // return both success and fileUrl
+    const fileUrl = response.data.data.exportVehicles;
+
+    // Return just the URL
+    return fileUrl;
   }
 );
 
@@ -322,8 +326,10 @@ const vehicleSlice = createSlice({
       })
       .addCase(exportVehicles.fulfilled, (state, action) => {
         state.loading = false;
-        state.exportSuccess = action.payload.success;
+        state.exportSuccess = true;
+        console.log("📁 Export file URL:", action.payload);
       })
+
       .addCase(exportVehicles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to export vehicles";
