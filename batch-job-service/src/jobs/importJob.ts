@@ -4,15 +4,15 @@ import path from "path";
 import xlsx from "xlsx";
 import Redis from "ioredis";
 import { AppDataSource } from "../config/data-source";
-import { parseCSV } from "../utils/csvParser"; // Adjust this path as needed
+import { parseCSV } from "../utils/csvParser";
 
-// Redis setup
+//Redis setup
 const redisClient = new Redis({ host: "localhost", port: 6380 });
 
-// Lazy import for entity
+//Lazy import for Vehicle entity
 let Vehicle: any;
 
-// Shared function to load and parse file (CSV or Excel)
+//Parses CSV or Excel files into JSON records.
 const parseFile = async (filePath: string): Promise<any[]> => {
   const ext = path.extname(filePath).toLowerCase();
 
@@ -29,18 +29,21 @@ const parseFile = async (filePath: string): Promise<any[]> => {
     return xlsx.utils.sheet_to_json(sheet);
   }
 
-  throw new Error("Unsupported file type: " + ext);
+  throw new Error(`Unsupported file type: ${ext}`);
 };
 
-// Main import logic
-export const importVehicles = async (filePath: string) => {
+/**
+ * Main function to import vehicle data from the parsed file into the database.
+ */
+export const importVehicles = async (filePath: string): Promise<void> => {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize();
     console.log("✅ Database connection initialized");
   }
 
   if (!Vehicle) {
-    Vehicle = (await import("../../../database-service/src/entity/Vehicle")).Vehicle;
+    Vehicle = (await import("../../../database-service/src/entity/Vehicle"))
+      .Vehicle;
   }
 
   const vehicleRepo = AppDataSource.getRepository(Vehicle);
@@ -67,8 +70,9 @@ export const importVehicles = async (filePath: string) => {
   console.log("✅ Vehicles saved successfully");
 };
 
-// Processor function
-export const importJobProcessor = async (job: Job) => {
+
+//Job processor to handle background import jobs.
+export const importJobProcessor = async (job: Job): Promise<void> => {
   const { filePath } = job.data;
   console.log(`📥 Starting import for file: ${filePath}`);
 

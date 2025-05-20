@@ -17,18 +17,20 @@ const UploadPage = () => {
   const [vin, setVin] = useState("");
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
-  const [filePath, setFilePath] = useState("");
-  const importSuccess = useSelector((state: RootState) => state.vehicle.importSuccess);
+
+  const importSuccess = useSelector(
+    (state: RootState) => state.vehicle.importSuccess
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
-   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
     }
   };
 
-   const handleImport = async () => {
+  const handleImport = async () => {
     if (!file) {
       Swal.fire("Please select a file first");
       return;
@@ -38,7 +40,11 @@ const UploadPage = () => {
       await dispatch(importVehicles(file)).unwrap();
       Swal.fire("✅ Success", "File imported successfully!", "success");
     } catch (error) {
-      Swal.fire("❌ Error", (error as Error).message || "Failed to import file", "error");
+      Swal.fire(
+        "❌ Error",
+        (error as Error).message || "Failed to import file",
+        "error"
+      );
     }
   };
 
@@ -175,80 +181,6 @@ const UploadPage = () => {
                 </Form>
               </div>
             </Col>
-            {/* <Col md={6} sm={12} className="mb-4">
-              <div
-                className="p-4 rounded shadow"
-                style={{
-                  backgroundColor: "#3F51B5",
-                  color: "white",
-                  marginTop: "40px",
-                }}
-              >
-                <h4
-                  className="mb-4"
-                  style={{
-                    fontFamily: "'Montserrat', serif",
-                    fontSize: "20px",
-                  }}
-                >
-                  Upload Vehicle Data File
-                </h4>
-                <Form>
-                  <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label
-                      style={{
-                        fontFamily: "'Montserrat', serif",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Choose CSV or Excel File
-                    </Form.Label>
-                    <Form.Control
-                      type="file"
-                      accept=".csv, .xlsx"
-                      style={{
-                        fontFamily: "'Montserrat', serif",
-                        fontSize: "14px",
-                      }}
-                      value={filePath}
-                      onChange={(e) => setFilePath(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Button
-                    type="submit"
-                    style={{
-                      backgroundColor: "#283593",
-                      fontFamily: "'Montserrat', serif",
-                      fontSize: "14px",
-                      cursor: "pointer",
-                      fontWeight: "600",
-                    }}
-                    onClick={handleImport}
-                  >
-                    Upload
-                  </Button>
-                </Form>
-              </div>
-            </Col> */}
-            {/* <Container className="mt-5">
-              <h2>Import Vehicles</h2>
-              <Row className="mt-4">
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label>File Path (on server)</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="/uploads/vehicles.csv"
-                      value={filePath}
-                      onChange={(e) => setFilePath(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Button className="mt-3" onClick={handleImport}>
-                    Import Vehicles
-                  </Button>
-                </Col>
-              </Row>
-            </Container> */}
 
             <Col md={6} sm={12}>
               <div
