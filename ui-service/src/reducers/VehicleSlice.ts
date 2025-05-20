@@ -156,7 +156,8 @@ export const deleteVehicle = createAsyncThunk(
   }
 );
 
-//import vehicles file
+// inside VehicleSlice.ts
+
 export const importVehicles = createAsyncThunk(
   "vehicle/import",
   async (file: File) => {
@@ -216,10 +217,7 @@ export const exportVehicles = createAsyncThunk(
       throw new Error(response.data.errors[0].message);
     }
 
-    const fileUrl = response.data.data.exportVehicles;
-
-    // Return just the URL
-    return fileUrl;
+    return response.data.data.exportVehicles;
   }
 );
 
@@ -326,10 +324,8 @@ const vehicleSlice = createSlice({
       })
       .addCase(exportVehicles.fulfilled, (state, action) => {
         state.loading = false;
-        state.exportSuccess = true;
-        console.log("📁 Export file URL:", action.payload);
+        state.exportSuccess = action.payload.success;
       })
-
       .addCase(exportVehicles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to export vehicles";

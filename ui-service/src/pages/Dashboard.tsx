@@ -215,8 +215,8 @@ const Dashboard = () => {
                           fontFamily: "'Montserrat', serif",
                           fontSize: "14px",
                           border: "none", // remove default inner border
-                          boxShadow: "none", 
-                          color:"black"
+                          boxShadow: "none",
+                          color: "black",
                         }}
                       />
                       <InputGroup.Text
@@ -253,8 +253,21 @@ const Dashboard = () => {
             Vehicle Records
           </h4>
 
-          <div className="table-responsive">
-            <Table striped bordered hover responsive className="text-center">
+          <div
+            className="table-responsive"
+            style={{
+              maxHeight: "600px",
+              overflowY: "auto",
+            }}
+          >
+            <Table
+              striped
+              bordered
+              hover
+              responsive
+              className="text-center"
+              style={{ minHeight: "600px" }}
+            >
               <thead className="bg-danger text-white">
                 <tr
                   style={{
