@@ -70,7 +70,7 @@ export const importVehicles = async (filePath: string): Promise<void> => {
 // Processor function for Bull job queue
 export const importJobProcessor = async (job: Job): Promise<void> => {
   const { filePath } = job.data;
-  console.log(`📥 Starting import for file: ${filePath}`);
+  console.log(`Starting import for file: ${filePath}`);
 
   try {
     await importVehicles(filePath);
@@ -80,7 +80,7 @@ export const importJobProcessor = async (job: Job): Promise<void> => {
       "import-events",
       JSON.stringify({
         type: "import-complete",
-        message: `✅ Import complete for file: ${path.basename(filePath)}`,
+        message: `✅ Import complete ${path.basename(filePath)} file`,
       })
     );
 

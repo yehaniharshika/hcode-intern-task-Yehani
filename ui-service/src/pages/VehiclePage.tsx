@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:4000");
 
-const UploadPage = () => {
+const VehiclePage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
@@ -57,7 +57,6 @@ const UploadPage = () => {
 
     try {
       await dispatch(importVehicles(file)).unwrap();
-      Swal.fire("✅ Success", "File imported successfully!", "success");
     } catch (error) {
       Swal.fire(
         "❌ Error",
@@ -155,6 +154,10 @@ const UploadPage = () => {
               fontSize: "14px",
               boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
               borderRadius: "6px",
+              fontFamily: "'Montserrat', serif",
+              fontWeight: "500",
+              backgroundColor: "#e09c95",
+              border: "2px solid red",
             }}
           >
             {note.message}
@@ -456,4 +459,4 @@ const UploadPage = () => {
   );
 };
 
-export default UploadPage;
+export default VehiclePage;
