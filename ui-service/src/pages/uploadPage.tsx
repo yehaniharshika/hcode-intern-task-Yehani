@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,9 @@ import { createVehicle, importVehicles } from "../reducers/VehicleSlice";
 import type { AppDispatch, RootState } from "../store/store";
 import Swal from "sweetalert2";
 import "../pages/style/alert.css";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:4000");
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -17,12 +20,28 @@ const UploadPage = () => {
   const [vin, setVin] = useState("");
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
-
-  const importSuccess = useSelector(
-    (state: RootState) => state.vehicle.importSuccess
-  );
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    const handleNotification = (data: any, type: "success" | "error") => {
+      const id = Date.now();
+      const newNotification = { ...data, type, id };
+      setNotifications((prev) => [...prev, newNotification]);
+      setTimeout(() => {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+      }, 10000);
+    };
+
+    socket.on("import-complete", (data) => handleNotification(data, "success"));
+    socket.on("import-failed", (data) => handleNotification(data, "error"));
+
+    return () => {
+      socket.off("import-complete");
+      socket.off("import-failed");
+    };
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -118,6 +137,30 @@ const UploadPage = () => {
   return (
     <div className="d-flex w-100 min-vh-100 bg-light">
       <Navigation />
+      {/* Notification panel */}
+      <div
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          zIndex: 9999,
+          width: "320px",
+        }}
+      >
+        {notifications.map((note) => (
+          <div
+            key={note.id}
+            className={`alert alert-${note.type} animate__animated animate__fadeInDown mb-2`}
+            style={{
+              fontSize: "14px",
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+              borderRadius: "6px",
+            }}
+          >
+            {note.message}
+          </div>
+        ))}
+      </div>
       <div
         className="flex-grow-1 p-4"
         style={{
