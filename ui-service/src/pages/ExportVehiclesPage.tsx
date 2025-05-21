@@ -86,18 +86,26 @@ const ExportVehiclesPage = () => {
               fontSize: "14px",
               boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
               borderRadius: "6px",
+              fontFamily: "'Montserrat', serif",
+              fontWeight:"500",
+              backgroundColor:"#e09c95",
+              border:"2px solid red"
             }}
           >
             {note.message}
             {note.downloadUrl && (
               <div className="mt-2 d-flex justify-content-end">
                 <Button
-                  variant={note.type === "success" ? "success" : "danger"}
+                  variant={note.type === "danger" ? "success" : "danger"}
                   size="sm"
                   href={note.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontWeight: "500", fontSize: "13px" }}
+                  style={{
+                    fontWeight: "650",
+                    fontSize: "14px",
+                    fontFamily: "'Montserrat', serif",
+                  }}
                 >
                   Download CSV
                 </Button>
@@ -129,7 +137,7 @@ const ExportVehiclesPage = () => {
                 </h4>
                 <Form onSubmit={(e) => e.preventDefault()}>
                   <Form.Group controlId="formAge" className="mb-3">
-                    <Form.Label style={{ fontSize: "14px" }}>
+                    <Form.Label style={{ fontSize: "14px" ,fontFamily: "'Montserrat', serif",}}>
                       Vehicle Age
                     </Form.Label>
                     <Form.Control
@@ -137,7 +145,7 @@ const ExportVehiclesPage = () => {
                       placeholder="Enter Vehicle Age"
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
-                      style={{ fontSize: "14px" }}
+                      style={{ fontSize: "14px" ,fontFamily: "'Montserrat', serif"}}
                     />
                   </Form.Group>
                   <div className="d-flex gap-2">
@@ -148,6 +156,7 @@ const ExportVehiclesPage = () => {
                         backgroundColor: "#283593",
                         fontSize: "14px",
                         fontWeight: "600",
+                        fontFamily: "'Montserrat', serif"
                       }}
                     >
                       Export File
