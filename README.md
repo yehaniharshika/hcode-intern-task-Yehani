@@ -37,12 +37,12 @@
 
 ## 🧰 Tech Stack
 
-| Category          | Technologies                                                          |
-| ----------------- | ----------------------------------------------------------------------|
-| **Frontend**      | React, Redux Toolkit, TypeScript, React Bootstrap, Socket.IO Client   |
-| **Backend**       | Node.js, Express.js, TypeScript, GraphQL (Apollo), TypeORM , Socket.IO|
-| **Queue & Cache** | Bull.js, Redis                                                        |
-| **Database**      | TypeORM with MySQL                                                    |
-| **Deployment**    | Docker, Docker Compose                                                |
+| Category          | Technologies                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------|
+| **Frontend**      | React, Redux Toolkit, TypeScript, React Bootstrap, Tailwind CSS, Socket.IO Client|
+| **Backend**       | Node.js, Express.js, TypeScript, GraphQL (Apollo), TypeORM , Socket.IO           |
+| **Queue & Cache** | Bull.js, Redis                                                                   |
+| **Database**      | TypeORM with MySQL                                                               |
+| **Deployment**    | Docker, Docker Compose                                                           |
 
 ---
