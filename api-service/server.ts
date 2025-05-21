@@ -9,28 +9,16 @@ import { VehicleResolver } from "./src/resolver/VehicleResolver";
 import { graphqlUploadExpress } from "graphql-upload-minimal";
 import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import http from "http";
-
-const app = express();
-const server = http.createServer(app);
-
-// ✅ Setup Socket.IO
-const io = new SocketIOServer(server, {
-  cors: {
-    origin: "http://localhost:5173", // React frontend
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log("🔌 New WebSocket connection:", socket.id);
-});
-export { io };
+import path from "path";
+import Redis from "ioredis";
 
 const startServer = async () => {
   try {
+    // ✅ Initialize database
     await AppDataSource.initialize();
-    console.log("✅ DB Connected");
+    console.log("✅ Database connected!");
 
+    // ✅ Build GraphQL schema
     const schema = await buildSchema({
       resolvers: [VehicleResolver],
     });
@@ -38,29 +26,79 @@ const startServer = async () => {
     const apolloServer = new ApolloServer({ schema });
     await apolloServer.start();
 
-    // ✅ GraphQL file upload middleware
+    const app = express();
+
+    // ✅ File upload middleware
     app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
-    // ✅ CORS for frontend
+    // ✅ CORS setup
     const allowedOrigin = "http://localhost:5173";
     app.use(cors({ origin: allowedOrigin, credentials: true }));
-
     app.use(express.json());
 
-    // ✅ Apollo GraphQL middleware
-    apolloServer.applyMiddleware({
-      app,
-      cors: false, // disable internal CORS since already handled
+    // ✅ Serve static files (CSV exports)
+    app.use("/exports", express.static(path.join(__dirname, "../batch-job-service/exports")));
+
+    // ✅ Apply GraphQL middleware
+    apolloServer.applyMiddleware({ app, cors: false });
+
+    // ✅ HTTP & Socket.IO server setup
+    const httpServer = new HttpServer(app);
+    const io = new SocketIOServer(httpServer, {
+      cors: {
+        origin: allowedOrigin,
+      },
     });
 
-    app.use("/downloads", express.static("exports"));
-
-    server.listen(4000, () => {
-      console.log(`🚀 Server: http://localhost:4000/graphql`);
+    // ✅ Handle WebSocket connection
+    io.on("connection", (socket) => {
+      console.log("🔌 Client connected:", socket.id);
     });
+
+    // ✅ Redis Pub/Sub setup
+    const redisSubscriber = new Redis({ host: "localhost", port: 6380 });
+
+    redisSubscriber.subscribe("export-events", (err, count) => {
+      if (err) {
+        console.error("❌ Redis subscribe failed:", err);
+      } else {
+        console.log("📡 Subscribed to export-events");
+      }
+    });
+
+    redisSubscriber.on("message", (channel, message) => {
+      if (channel === "export-events") {
+        const data = JSON.parse(message);
+        const socket = getSocketIO();
+        if (socket) {
+          socket.emit(data.type, data);
+          console.log(`📤 Emitted event: ${data.type}`);
+        }
+      }
+    });
+
+    // ✅ Start listening
+    const PORT = 4000;
+    httpServer.listen(PORT, () => {
+      console.log(`🚀 GraphQL ready at http://localhost:${PORT}${apolloServer.graphqlPath}`);
+      console.log(`🔊 Socket.IO ready on ws://localhost:${PORT}`);
+    });
+
+    // ✅ Export socket instance for global access
+    exportSocketIO(io);
   } catch (err) {
     console.error("❌ Server startup error:", err);
   }
 };
 
+// 🔁 Global socket instance handling
+let socketInstance: SocketIOServer | null = null;
+
+export const exportSocketIO = (io: SocketIOServer) => {
+  socketInstance = io;
+};
+
+export const getSocketIO = (): SocketIOServer | null => socketInstance;
+
+// 🔁 Start the server
 startServer();
