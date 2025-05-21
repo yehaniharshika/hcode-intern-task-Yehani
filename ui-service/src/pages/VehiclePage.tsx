@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createVehicle, importVehicles } from "../reducers/VehicleSlice";
-import type { AppDispatch, RootState } from "../store/store";
+import type { AppDispatch } from "../store/store";
 import Swal from "sweetalert2";
 import "../pages/style/alert.css";
 import { io } from "socket.io-client";
