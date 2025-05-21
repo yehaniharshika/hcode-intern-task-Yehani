@@ -14,11 +14,11 @@ import Redis from "ioredis";
 
 const startServer = async () => {
   try {
-    // ✅ Initialize database
+    //Initialize database
     await AppDataSource.initialize();
     console.log("✅ Database connected!");
 
-    // ✅ Build GraphQL schema
+    //Build GraphQL schema
     const schema = await buildSchema({
       resolvers: [VehicleResolver],
     });
@@ -28,21 +28,24 @@ const startServer = async () => {
 
     const app = express();
 
-    // ✅ File upload middleware
+    //File upload middleware
     app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
-    // ✅ CORS setup
+    //CORS setup
     const allowedOrigin = "http://localhost:5173";
     app.use(cors({ origin: allowedOrigin, credentials: true }));
     app.use(express.json());
 
-    // ✅ Serve static files (CSV exports)
-    app.use("/exports", express.static(path.join(__dirname, "../batch-job-service/exports")));
+    //Serve static files (CSV exports)
+    app.use(
+      "/exports",
+      express.static(path.join(__dirname, "../batch-job-service/exports"))
+    );
 
-    // ✅ Apply GraphQL middleware
+    //Apply GraphQL middleware
     apolloServer.applyMiddleware({ app, cors: false });
 
-    // ✅ HTTP & Socket.IO server setup
+    //HTTP & Socket.IO server setup
     const httpServer = new HttpServer(app);
     const io = new SocketIOServer(httpServer, {
       cors: {
@@ -50,12 +53,12 @@ const startServer = async () => {
       },
     });
 
-    // ✅ Handle WebSocket connection
+    //Handle WebSocket connection
     io.on("connection", (socket) => {
       console.log("🔌 Client connected:", socket.id);
     });
 
-    // ✅ Redis Pub/Sub setup
+    //Redis Publisher setup
     const redisSubscriber = new Redis({ host: "localhost", port: 6380 });
 
     redisSubscriber.subscribe("export-events", (err, count) => {
@@ -65,33 +68,42 @@ const startServer = async () => {
         console.log("📡 Subscribed to export-events");
       }
     });
+    redisSubscriber.subscribe("import-events");
 
     redisSubscriber.on("message", (channel, message) => {
+      const data = JSON.parse(message);
+      const socket = getSocketIO();
+
+      if (!socket) return;
+
       if (channel === "export-events") {
-        const data = JSON.parse(message);
-        const socket = getSocketIO();
-        if (socket) {
-          socket.emit(data.type, data);
-          console.log(`📤 Emitted event: ${data.type}`);
-        }
+        socket.emit(data.type, data);
+        console.log(`Emitted export event: ${data.type}`);
+      }
+
+      if (channel === "import-events") {
+        socket.emit(data.type, data);
+        console.log(`Emitted import event: ${data.type}`);
       }
     });
 
-    // ✅ Start listening
+    //Start listening
     const PORT = 4000;
     httpServer.listen(PORT, () => {
-      console.log(`🚀 GraphQL ready at http://localhost:${PORT}${apolloServer.graphqlPath}`);
+      console.log(
+        `🚀 GraphQL ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
+      );
       console.log(`🔊 Socket.IO ready on ws://localhost:${PORT}`);
     });
 
-    // ✅ Export socket instance for global access
+    //Export socket instance for global access
     exportSocketIO(io);
   } catch (err) {
     console.error("❌ Server startup error:", err);
   }
 };
 
-// 🔁 Global socket instance handling
+//Global socket instance handling
 let socketInstance: SocketIOServer | null = null;
 
 export const exportSocketIO = (io: SocketIOServer) => {
@@ -100,5 +112,5 @@ export const exportSocketIO = (io: SocketIOServer) => {
 
 export const getSocketIO = (): SocketIOServer | null => socketInstance;
 
-// 🔁 Start the server
+//Start the server
 startServer();
