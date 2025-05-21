@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -21,7 +21,7 @@ const VehiclePage = () => {
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
   const [notifications, setNotifications] = useState<any[]>([]);
-
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -52,11 +52,28 @@ const VehiclePage = () => {
   const handleImport = async () => {
     if (!file) {
       Swal.fire("Please select a file first");
+      Swal.fire({
+        title: "Please select a file first",
+        icon: "info",
+        confirmButtonText: "OK",
+        background: "white",
+        color: "black",
+        confirmButtonColor: "green",
+        timer: 3000,
+        width: "450px",
+        customClass: {
+          title: "swal-title",
+          popup: "swal-popup",
+          confirmButton: "swal-button",
+        },
+      });
       return;
     }
 
     try {
       await dispatch(importVehicles(file)).unwrap();
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       Swal.fire(
         "❌ Error",
@@ -136,7 +153,7 @@ const VehiclePage = () => {
   return (
     <div className="d-flex w-100 min-vh-100 bg-light">
       <Navigation />
-      {/* Notification panel */}
+      {/* Notifications  */}
       <div
         style={{
           position: "fixed",
@@ -203,10 +220,12 @@ const VehiclePage = () => {
                       Choose CSV or Excel File
                     </Form.Label>
                     <Form.Control
+                      ref={fileInputRef}
                       type="file"
                       accept=".csv, .xlsx"
                       style={{
                         fontFamily: "'Montserrat', serif",
+                        fontWeight:"500",
                         fontSize: "14px",
                       }}
                       onChange={handleFileChange}
