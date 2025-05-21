@@ -7,45 +7,56 @@ import { buildSchema } from "type-graphql";
 import { AppDataSource } from "./src/config/data-source";
 import { VehicleResolver } from "./src/resolver/VehicleResolver";
 import { graphqlUploadExpress } from "graphql-upload-minimal";
+import { Server as HttpServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
+import http from "http";
+
+const app = express();
+const server = http.createServer(app);
+
+// ✅ Setup Socket.IO
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "http://localhost:5173", // React frontend
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("🔌 New WebSocket connection:", socket.id);
+});
+export { io };
 
 const startServer = async () => {
   try {
     await AppDataSource.initialize();
-    console.log("✅ Database connected!");
+    console.log("✅ DB Connected");
 
     const schema = await buildSchema({
       resolvers: [VehicleResolver],
     });
 
-    const server = new ApolloServer({ schema });
+    const apolloServer = new ApolloServer({ schema });
+    await apolloServer.start();
 
-    await server.start();
-
-    const app = express();
+    // ✅ GraphQL file upload middleware
     app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
-    // ✅ Fix: Proper CORS for Vite
+    // ✅ CORS for frontend
     const allowedOrigin = "http://localhost:5173";
-    app.use(
-      cors({
-        origin: allowedOrigin,
-        credentials: true,
-      })
-    );
+    app.use(cors({ origin: allowedOrigin, credentials: true }));
 
     app.use(express.json());
 
-    // Apply Apollo middleware AFTER CORS
-    server.applyMiddleware({
+    // ✅ Apollo GraphQL middleware
+    apolloServer.applyMiddleware({
       app,
-      cors: false, // 🚨 disable Apollo's internal CORS handling!
+      cors: false, // disable internal CORS since already handled
     });
 
-    const PORT = 4000;
-    app.listen(PORT, () => {
-      console.log(
-        `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
-      );
+    app.use("/downloads", express.static("exports"));
+
+    server.listen(4000, () => {
+      console.log(`🚀 Server: http://localhost:4000/graphql`);
     });
   } catch (err) {
     console.error("❌ Server startup error:", err);
