@@ -14,6 +14,7 @@ import UploadPage from "./pages/uploadPage.tsx";
 
 import SettingPage from "./pages/SettingPage.tsx";
 import ExportVehiclesPage from "./pages/ExportVehiclesPage.tsx";
+import "animate.css";
 
 function App() {
   const routes = createBrowserRouter([
