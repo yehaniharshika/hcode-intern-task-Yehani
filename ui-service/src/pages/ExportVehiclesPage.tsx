@@ -43,6 +43,7 @@ const ExportVehiclesPage = () => {
 
     try {
       await dispatch(exportVehicles(Number(age)));
+      setAge("");
       Swal.fire({
         title: "Export Requested",
         html: '<p class="swal-text">The export is being processed.</p>',

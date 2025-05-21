@@ -1,7 +1,6 @@
 import { Navigation } from "../components/Navigation.tsx";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { FaCamera } from "react-icons/fa";
-import { motion } from "framer-motion";
 import { useState } from "react";
 
 import "./style/setting.css";
@@ -11,7 +10,7 @@ interface SettingSectionProps {
   user?: User;
 }
 
-const SettingSection: React.FC<SettingSectionProps> = ({ user }) => {
+const SettingSection: React.FC<SettingSectionProps> = ({}) => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
