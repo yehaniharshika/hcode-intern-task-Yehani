@@ -1,12 +1,12 @@
 # 🚗 VehiCore - Comprehensive Vehicle Data Management System
 
---
+---
 
 ## 📖 Project Description
 
 **VehiCore**  is a full-stack microservice-based web application designed for managing vehicle data efficiently. Built for the Hcode internship task, it enables importing vehicle records from CSV/Excel, real-time export handling, search with filters, and displays alerts using WebSockets. This system supports bulk operations via background job processing and is containerized for scalable deployment.
 
---
+---
 
 ## 🚀 Features
 
@@ -33,7 +33,7 @@
 - batch-job-service: Bull-powered job queue
 - database-service: TypeORM database models
 
---
+---
 
 ## 📌 Tech Stack
 
@@ -43,7 +43,8 @@
 | **Backend**       | Node.js, Express.js, TypeScript, GraphQL (Apollo), TypeORM , Socket.IO , Bull.js, Redis|
 | **Database**      | TypeORM with MySQL                                                                     |
 | **Deployment**    | Docker, Docker Compose                                                                 |
---
+
+---
 
 ## ⚙️ Installation & Setup Instructions
 **Prerequisites**
@@ -73,7 +74,7 @@ REDIS_PORT=6380
 docker-compose up --build
 ```
 
---
+---
 
 ## 📁 Folder Structure
 
@@ -88,6 +89,8 @@ hcode-intern-task-Yehani/
 ├── License.txt
 └── README.md
 ```
+
+---
 
 ## 🪪 License
 © 2025 All Right Reserved Created By Yehani Harshika
