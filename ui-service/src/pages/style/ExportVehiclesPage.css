@@ -1,0 +1,14 @@
+
+.alert {
+  transition: all 0.3s ease-in-out;
+}
+
+.notification-download-button {
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.notification-download-button:hover {
+  background-color: #2e7d32 !important;
+  color: #fff;
+}
