@@ -7,7 +7,10 @@ import { AppDataSource } from "../config/data-source";
 import { parseCSV } from "../utils/csvParser";
 
 // Redis setup for publishing events
-const redisPublisher = new Redis({ host: "localhost", port: 6380 });
+const redisPublisher = new Redis({
+  host: process.env.REDIS_HOST || "localhost",
+  port: Number(process.env.REDIS_PORT) || 6380,
+});
 
 // Lazy import for Vehicle entity
 let Vehicle: any;

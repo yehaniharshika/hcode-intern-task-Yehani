@@ -4,7 +4,7 @@ import { Vehicle } from '../entity/Vehicle';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
-  host: 'localhost',
+  host: process.env.DB_HOST || 'localhost',
   port: 3306,
   username: 'root',   
   password: '1234',

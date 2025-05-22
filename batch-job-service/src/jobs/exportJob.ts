@@ -7,7 +7,11 @@ import { AppDataSource } from "../config/data-source";
 import Redis from "ioredis";
 
 let Vehicle: any;
-const redisPublisher = new Redis({ host: "localhost", port: 6380 });
+
+const redisPublisher = new Redis({
+  host: process.env.REDIS_HOST || "localhost",
+  port: Number(process.env.REDIS_PORT) || 6380,
+});
 
 export const exportVehicles = async (minimumAge: number): Promise<string> => {
   if (!AppDataSource.isInitialized) {

@@ -1,62 +1,83 @@
-# version: '3.8'
+version: "3.9"
 
-# services:
-#   api:
-#     build: ./api-service
-#     ports:
-#       - "3000:3000"
-#     environment:
-#       - DB_HOST=db
-#       - DB_PORT=3306
-#       - DB_USERNAME=user
-#       - DB_PASSWORD=pass
-#       - DB_NAME=vehicles
-#       - REDIS_URL=redis://redis:6379
-#     depends_on:
-#       - db
-#       - redis
-#     volumes:
-#       - ./api-service:/usr/src/app
-#     restart: always
+services:
+  # Redis Service
+  redis:
+    image: redis:7.0
+    restart: always
+    container_name: redis-server
+    ports:
+      - "6380:6380"  # Host:Container
+    command: ["redis-server", "--port", "6380"]
 
-#   batch:
-#     build: ./batch-job-service
-#     environment:
-#       - REDIS_URL=redis://redis:6379
-#     depends_on:
-#       - redis
-#     volumes:
-#       - ./batch-job-service:/usr/src/app
-#     restart: always
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    restart: always
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: vehicledatadb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
-#   frontend:
-#     build: ./ui-service
-#     ports:
-#       - "3001:3000"
-#     volumes:
-#       - ./ui-service:/usr/src/app
-#     stdin_open: true
-#     tty: true
-#     restart: always
+  # API Service
+  api-service:
+    build: ./api-service
+    container_name: api-service
+    depends_on:
+      - redis
+      - mysql
+    ports:
+      - "4000:4000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6380
+      - DB_HOST=mysql
+    env_file:
+      - ./api-service/.env
+    volumes:
+      - ./api-service:/app
 
-#   db:
-#     image: mysql:8
-#     restart: always
-#     environment:
-#       MYSQL_ROOT_PASSWORD: root
-#       MYSQL_DATABASE: vehicles
-#       MYSQL_USER: root
-#       MYSQL_PASSWORD: 1234
-#     ports:
-#       - "3306:3306"
-#     volumes:
-#       - db_data:/var/lib/mysql
+  # Batch Job Worker
+  batch-job-service:
+    build: ./batch-job-service
+    container_name: batch-job-service
+    depends_on:
+      - redis
+      - mysql
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6380
+      - DB_HOST=mysql
+    env_file:
+      - ./batch-job-service/.env
+    volumes:
+      - ./batch-job-service:/app
 
-#   redis:
-#     image: redis:7
-#     ports:
-#       - "6379:6379"
-#     restart: always
+  # Database Management Service
+  database-service:
+    build: ./database-service
+    container_name: database-service
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+    volumes:
+      - ./database-service:/app
 
-# volumes:
-#   db_data:
+  # React Frontend (Vite Build + Nginx Serve)
+  ui-service:
+    build: ./ui-service
+    container_name: ui-service
+    ports:
+      - "5173:80"
+    volumes:
+      - ./ui-service:/app
+
+volumes:
+  mysql_data:
