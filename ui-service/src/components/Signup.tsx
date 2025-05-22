@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Form, Button, Container, Card, Row, Col } from "react-bootstrap";
+import { useState } from "react";
+import { Form, Button, Container, Card} from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Signup = () => {
