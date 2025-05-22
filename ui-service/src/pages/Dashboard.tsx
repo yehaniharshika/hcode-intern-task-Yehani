@@ -130,7 +130,7 @@ const Dashboard = () => {
     if (!selectedVehicle?.id) return;
 
     const updatedVehicle = {
-      id: selectedVehicle.id, // must include id for update
+      id: selectedVehicle.id, 
       first_name,
       last_name,
       email,
@@ -147,7 +147,7 @@ const Dashboard = () => {
         setSelectedVehicle(null);
         Swal.fire({
           title: "✅ Success!",
-          html: '<p class="swal-text">Vehicle updated successfully.</p>', // Added class for styling
+          html: '<p class="swal-text">Vehicle updated successfully.</p>',
           icon: "success",
           confirmButtonText: "OK",
           background: "white",

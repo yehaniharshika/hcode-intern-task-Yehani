@@ -35,9 +35,9 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - REDIS_HOST=127.0.0.1
+      - REDIS_HOST=redis
       - REDIS_PORT=6380
-      - DB_HOST=localhost
+      - DB_HOST=mysql
     env_file:
       - ./api-service/.env
     volumes:
@@ -51,9 +51,9 @@ services:
       - redis
       - mysql
     environment:
-      - REDIS_HOST=127.0.0.1
+      - REDIS_HOST=redis
       - REDIS_PORT=6380
-      - DB_HOST=localhost
+      - DB_HOST=mysql
     env_file:
       - ./batch-job-service/.env
     volumes:
