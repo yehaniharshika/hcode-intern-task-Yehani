@@ -184,7 +184,7 @@ const Dashboard = () => {
   };
 
   const filteredVehicles = vehicles.filter((vehicle: any) =>
-    vehicle.car_make?.toLowerCase().includes(searchTerm.toLowerCase())
+    vehicle.car_model?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
