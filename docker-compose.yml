@@ -3,7 +3,7 @@ version: "3.9"
 services:
   # Redis Service
   redis:
-    image: redis:7.0
+    image: redis:5.0
     restart: always
     container_name: redis-server
     ports:
@@ -35,9 +35,9 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST=127.0.0.1
       - REDIS_PORT=6380
-      - DB_HOST=mysql
+      - DB_HOST=localhost
     env_file:
       - ./api-service/.env
     volumes:
@@ -51,9 +51,9 @@ services:
       - redis
       - mysql
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST=127.0.0.1
       - REDIS_PORT=6380
-      - DB_HOST=mysql
+      - DB_HOST=localhost
     env_file:
       - ./batch-job-service/.env
     volumes:
