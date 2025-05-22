@@ -168,13 +168,13 @@ const VehiclePage = () => {
             key={note.id}
             className={`alert alert-${note.type} animate__animated animate__fadeInDown mb-2`}
             style={{
-              fontSize: "14px",
+              fontSize: "15px",
               boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
               borderRadius: "6px",
               fontFamily: "'Montserrat', serif",
               fontWeight: "500",
-              backgroundColor: "#e09c95",
-              border: "2px solid red",
+              backgroundColor: "#b3e3e4",
+              border: "3px solid #019394",
             }}
           >
             {note.message}
