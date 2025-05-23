@@ -71,7 +71,7 @@ REDIS_PORT=6380
 
 ### 3️⃣ Run Services
 
-### ✅ Using Docker**
+### ✅ Using Docker
 ```sh
 docker-compose up --build
 ```
@@ -79,7 +79,7 @@ docker-compose up --build
 ### ✅ Run Services Manually (if Docker doesn't work)
 Since Docker isn’t working on your setup, you can run each service separately
 
-1. **Start Redis Server** 
+01. **Start Redis Server** 
 
 Open a terminal and run:
 ```sh
@@ -87,7 +87,7 @@ redis-server --port 6380
 ```
 Make sure Redis is installed on your machine.If not, install Redis first.
 
-- Run Database Service
+02. **Run Database Service**
 In project terminal:
 ```sh
 cd database-service
@@ -95,7 +95,7 @@ npm install    # if not already done
 npx ts-node index.ts
 ```
 
-- Run Batch Job Service
+03. **Run Batch Job Service**
 open another project terminal:
 ```sh
 cd batch-job-service
@@ -103,7 +103,7 @@ npm install    # if not already done
 npx ts-node worker.ts
 ```
 
-- Run API Service
+04. **Run API Service**
 open another project terminal:
 ```sh
 cd api-service
