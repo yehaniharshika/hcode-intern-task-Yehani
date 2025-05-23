@@ -134,9 +134,9 @@ Use the following credentials to log in:
 ## 🧪 Verify Imported Files
 In the project, ensure all necessary files are correctly imported and accessible.You can use this Files.
 
-- [For CSV file import](sample/vehicle-data.csv)
+- [For CSV file import](batch-job-service/sample/vehicle-data.csv)
 
-- [For Excel file import](sample/vehicle-details.xlsx)
+- [For Excel file import](batch-job-service/sample/vehicle-details.xlsx)
 
 ---
 
