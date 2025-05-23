@@ -10,7 +10,7 @@
 
 ## 🚀 Features
 
-### ✅ Backend (Node.js + GraphQL + Bull + Redis + TypeORM with MySQL)
+### ✅ Backend
 - Import vehicle data via CSV/Excel.
 - Auto calculation of age_of_vehicle from manufactured_date.
 - CRUD Operations (Create, Read, Update, Delete) for vehicle records.
@@ -20,17 +20,18 @@
 - Redis Pub/Sub with Socket.IO for notification
 
 
-### ✅ Frontend (React + Redux + TypeScript +  React Bootstrap + Tailwind CSS)
+### ✅ Frontend
 - File upload UI with progress and alerting.
 - Real-time success/error notifications for import/export jobs.
 - Paginated and searchable vehicle list.
 - Dynamic vehicle entry form with age calculation.
 
 ### ✅ System Architecture
+
 **Microservice Architecture-based Design**
-- ui-service: React frontend
-- api-service: GraphQL backend
-- batch-job-service: Bull-powered job queue
+- ui-service: React-based frontend for user interaction
+- api-service: GraphQL backend that handles all API requests and business logic
+- batch-job-service: Background job queue powered by Bull and Redis
 - database-service: TypeORM database models
 
 ---
@@ -60,13 +61,11 @@ git clone https://github.com/yehaniharshika/hcode-intern-task-Yehani.git
 
 ### 2️⃣ Update Environment Variables
 ```sh
-PORT=4000
 DB_HOST=localhost
 DB_PORT=3306
-DB_USERNAME=root
+DB_USERNAME=yourusername
 DB_PASSWORD=yourpassword
 DB_NAME=vehicledatadb
-REDIS_PORT=6380
 ```
 
 ### 3️⃣ Run Services
@@ -123,7 +122,7 @@ npm install    # if not already done
 npm run dev
 ``` 
 
-### 4️⃣Login Credentials
+### 4️⃣ Login Credentials
 After all services are running, open your browser and go to the UI.
 
 Use the following credentials to log in:
