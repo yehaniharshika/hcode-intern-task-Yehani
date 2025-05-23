@@ -1,4 +1,4 @@
-# VehiCore-Comprehensive Vehicle Data Management System 🚗
+## VehiCore - Comprehensive Vehicle Data Management System 🚗
 
 ---
 
