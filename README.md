@@ -70,6 +70,7 @@ REDIS_PORT=6380
 ```
 
 ### 3️⃣ Run Services
+✅ **Using Docker**
 ```sh
 docker-compose up --build
 ```
@@ -82,7 +83,7 @@ Open a terminal and run:
 ```sh
 redis-server --port 6380
 ```
-Make sure Redis is installed on your computer (if not, you need to install Redis first)
+Make sure Redis is installed on your machine.If not, install Redis first.
 
 - Run Database Service
 In project terminal:
@@ -117,17 +118,20 @@ npm run dev
 ``` 
 
 ### 4️⃣Login Credentials
-After all services are running, open your browser to the UI
+After all services are running, open your browser and go to the UI.
 
-Use this to log in:
+Use the following credentials to log in:
 
 - Email: adminvehicore@gmail.com
 - Password: vehicore123
 
-### Verify Imported Files
-In the project, ensure all necessary files are correctly imported and accessible. You can use this files
-[For CSV file import](sample/vehicle-data.csv)
-[For Excel file import](sample/vehicle-details.xlsx)
+
+## 🧪 Verify Imported Files
+In the project, ensure all necessary files are correctly imported and accessible.You can use this Files.
+
+- [For CSV file import](sample/vehicle-data.csv)
+
+- [For Excel file import](sample/vehicle-details.xlsx)
 
 ---
 
