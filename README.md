@@ -70,15 +70,17 @@ REDIS_PORT=6380
 ```
 
 ### 3️⃣ Run Services
-✅ **Using Docker**
+
+### ✅ Using Docker**
 ```sh
 docker-compose up --build
 ```
 
-✅  **Run Services Manually (if Docker doesn't work)**
+### ✅ Run Services Manually (if Docker doesn't work)
 Since Docker isn’t working on your setup, you can run each service separately
 
-- Start Redis Server
+1. **Start Redis Server** 
+
 Open a terminal and run:
 ```sh
 redis-server --port 6380
