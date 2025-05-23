@@ -19,7 +19,7 @@ const Login = () => {
     } else {
       console.log("Login Data:", formData);
       // Simulate authentication (Replace this with actual API call)
-      if (formData.email === "admin@gmail.com" && formData.password === "123") {
+      if (formData.email === "adminvehicore@gmail.com" && formData.password === "vehicore123") {
         navigate("/dashboard"); // Redirect to dashboard
       } else {
         alert("Invalid email or password");

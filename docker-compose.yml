@@ -1,31 +1,27 @@
 version: "3.9"
 
 services:
-  # Redis Service
   redis:
     image: redis:5.0
     restart: always
     container_name: redis-server
     ports:
-      - "6380:6380"  # Host:Container
+      - "6380:6380"
     command: ["redis-server", "--port", "6380"]
 
-  # MySQL Database
   mysql:
     image: mysql:8.0
+    container_name: mysql-server
     restart: always
-    container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: vehicledatadb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 1234
+      
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
-  # API Service
   api-service:
     build: ./api-service
     container_name: api-service
@@ -35,15 +31,18 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6380
-      - DB_HOST=mysql
-    env_file:
-      - ./api-service/.env
+      REDIS_HOST: redis
+      REDIS_PORT: 6380
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+      DB_DATABASE: vehicledatadb
+      IMPORT_DIRECTORY: ./uploads/imports
+      EXPORT_DIRECTORY: ./uploads/exports
     volumes:
       - ./api-service:/app
 
-  # Batch Job Worker
   batch-job-service:
     build: ./batch-job-service
     container_name: batch-job-service
@@ -51,31 +50,39 @@ services:
       - redis
       - mysql
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6380
-      - DB_HOST=mysql
-    env_file:
-      - ./batch-job-service/.env
+      REDIS_HOST: redis
+      REDIS_PORT: 6380
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+      DB_DATABASE: vehicledatadb
+      IMPORT_DIRECTORY: ./uploads/imports
+      EXPORT_DIRECTORY: ./uploads/exports
     volumes:
       - ./batch-job-service:/app
 
-  # Database Management Service
   database-service:
     build: ./database-service
     container_name: database-service
     depends_on:
       - mysql
     environment:
-      - DB_HOST=mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+      DB_DATABASE: vehicledatadb
     volumes:
       - ./database-service:/app
 
-  # React Frontend (Vite Build + Nginx Serve)
   ui-service:
     build: ./ui-service
     container_name: ui-service
     ports:
       - "5173:80"
+    depends_on:
+      - api-service
     volumes:
       - ./ui-service:/app
 

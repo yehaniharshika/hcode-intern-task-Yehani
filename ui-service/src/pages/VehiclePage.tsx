@@ -9,6 +9,9 @@ import "../pages/style/alert.css";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:4000");
+const nameRegex = /^[A-Za-z\s]{2,30}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const vinRegex = /^[A-HJ-NPR-Z0-9]{10}$/;
 
 const VehiclePage = () => {
   const [file, setFile] = useState<File | null>(null);

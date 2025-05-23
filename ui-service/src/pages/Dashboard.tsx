@@ -130,7 +130,7 @@ const Dashboard = () => {
     if (!selectedVehicle?.id) return;
 
     const updatedVehicle = {
-      id: selectedVehicle.id, 
+      id: selectedVehicle.id,
       first_name,
       last_name,
       email,
@@ -391,7 +391,15 @@ const Dashboard = () => {
         {/* Edit Modal */}
         <Modal show={showModal} onHide={() => setShowModal(false)} centered>
           <Modal.Header closeButton>
-            <Modal.Title>Edit Vehicle Details</Modal.Title>
+            <Modal.Title
+              style={{
+                fontFamily: "'Montserrat', serif",
+                color: "darkblue",
+                fontWeight: "600",
+              }}
+            >
+              Edit Vehicle Details
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -400,11 +408,17 @@ const Dashboard = () => {
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
+                    fontWeight: "600",
                   }}
                 >
                   First Name
                 </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="text"
                   value={first_name}
                   onChange={(e) => setFirstName(e.target.value)}
@@ -416,11 +430,17 @@ const Dashboard = () => {
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
+                    fontWeight: "600",
                   }}
                 >
                   Last Name
                 </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="text"
                   value={last_name}
                   onChange={(e) => setLastName(e.target.value)}
@@ -428,8 +448,21 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Email Address
+                </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -437,8 +470,21 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Car Make</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Car Make
+                </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="text"
                   value={car_make}
                   onChange={(e) => setCarMake(e.target.value)}
@@ -446,8 +492,21 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Car Model</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Car Model
+                </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="text"
                   value={car_model}
                   onChange={(e) => setCarModel(e.target.value)}
@@ -455,8 +514,21 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>VIN</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  VIN
+                </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="text"
                   value={vin}
                   onChange={(e) => setVin(e.target.value)}
@@ -464,8 +536,21 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Manufactured Date</Form.Label>
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Manufactured Date
+                </Form.Label>
                 <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
                   type="date"
                   value={manufactured_date}
                   onChange={(e) => {
@@ -483,16 +568,49 @@ const Dashboard = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Age Of Vehicle</Form.Label>
-                <Form.Control type="text" value={age_of_vehicle} readOnly />
+                <Form.Label
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Age Of Vehicle
+                </Form.Label>
+                <Form.Control
+                  style={{
+                    fontFamily: "'Montserrat', serif",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                  type="text"
+                  value={age_of_vehicle}
+                  readOnly
+                />
               </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <Button
+              style={{
+                fontFamily: "'Montserrat', serif",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+              variant="secondary"
+              onClick={() => setShowModal(false)}
+            >
               Cancel
             </Button>
-            <Button variant="primary" onClick={handleUpdateVehicle}>
+            <Button
+              style={{
+                fontFamily: "'Montserrat', serif",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+              variant="primary"
+              onClick={handleUpdateVehicle}
+            >
               Update
             </Button>
           </Modal.Footer>
