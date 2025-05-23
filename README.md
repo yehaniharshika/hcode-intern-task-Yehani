@@ -1,4 +1,4 @@
-## VehiCore - Comprehensive Vehicle Data Management System 🚗
+## VehiCore - Comprehensive Vehicle Data Management System 🚗🚘
 
 ---
 
@@ -29,10 +29,10 @@
 ### ✅ System Architecture
 
 **Microservice Architecture-based Design**
-- ui-service: React-based frontend for user interaction
-- api-service: GraphQL backend that handles all API requests and business logic
-- batch-job-service: Background job queue powered by Bull and Redis
-- database-service: TypeORM database models
+- ui-service - React-based frontend for user interaction
+- api-service - GraphQL backend that handles all API requests and business logic
+- batch-job-service - Background job queue powered by Bull and Redis
+- database-service - TypeORM database models
 
 ---
 
@@ -78,7 +78,7 @@ docker-compose up --build
 ### ✅ Run Services Manually ( If Docker doesn't work )
 Since Docker isn’t working on your setup, you can run each service separately
 
-01. **Start Redis Server** 
+**01. Start Redis Server** 
 
 Open a terminal and run:
 ```sh
@@ -86,7 +86,7 @@ redis-server --port 6380
 ```
 Make sure Redis is installed on your machine.If not, install Redis first.
 
-02. **Run Database Service**
+**02. Run Database Service**
 
 In project terminal:
 ```sh
@@ -95,7 +95,7 @@ npm install    # if not already done
 npx ts-node index.ts
 ```
 
-03. **Run Batch Job Service**
+**03. Run Batch Job Service**
 
 open another project terminal:
 ```sh
