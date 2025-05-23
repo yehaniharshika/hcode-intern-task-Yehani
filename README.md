@@ -88,7 +88,7 @@ Make sure Redis is installed on your machine.If not, install Redis first.
 
 **02. Run Database Service**
 
-In project terminal:
+Open new project terminal and run these commands
 ```sh
 cd database-service
 npm install    # if not already done
@@ -97,25 +97,25 @@ npx ts-node index.ts
 
 **03. Run Batch Job Service**
 
-open another project terminal:
+Open another project terminal and run these commands
 ```sh
 cd batch-job-service
 npm install    # if not already done
 npx ts-node worker.ts
 ```
 
-04. **Run API Service**
+**04. Run API Service**
 
-open another project terminal:
+Open another project terminal and run these commands
 ```sh
 cd api-service
 npm install    # if not already done
 npm run start
 ```
 
-05. **Run UI Service**
+**05. Run UI Service**
 
-open another project terminal:
+Open another project terminal and run these commands
 ```sh
 cd ui-service
 npm install    # if not already done
