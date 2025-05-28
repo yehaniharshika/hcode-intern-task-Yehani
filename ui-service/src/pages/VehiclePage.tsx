@@ -11,7 +11,17 @@ import { io } from "socket.io-client";
 const socket = io("http://localhost:4000");
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const vinRegex = /^[A-HJ-NPR-Z0-9]{10}$/;
+const vinRegex = /^[A-HJ-NPR-Z0-9]{12}$/;
+
+interface ValidationErrors {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  car_make?: string;
+  car_model?: string;
+  vin?: string;
+  manufactured_date?: string;
+}
 
 const VehiclePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -24,6 +34,9 @@ const VehiclePage = () => {
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -54,7 +67,6 @@ const VehiclePage = () => {
 
   const handleImport = async () => {
     if (!file) {
-      Swal.fire("Please select a file first");
       Swal.fire({
         title: "Please select a file first",
         icon: "info",
@@ -86,17 +98,71 @@ const VehiclePage = () => {
     }
   };
 
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
+
+    // First Name validation
+    if (!first_name.trim()) {
+      errors.first_name = "First name is required.";
+    } else if (!nameRegex.test(first_name)) {
+      errors.first_name =
+        "First name must be 2-30 characters and contain only letters and spaces.";
+    }
+
+    // Last Name validation
+    if (!last_name.trim()) {
+      errors.last_name = "Last name is required.";
+    } else if (!nameRegex.test(last_name)) {
+      errors.last_name =
+        "Last name must be 2-30 characters and contain only letters and spaces.";
+    }
+
+    // Email validation
+    if (!email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!emailRegex.test(email)) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    // Car Make validation
+    if (!car_make.trim()) {
+      errors.car_make = "Car make is required.";
+    }
+
+    // Car Model validation
+    if (!car_model.trim()) {
+      errors.car_model = "Car model is required.";
+    }
+
+    // VIN validation
+    if (!vin.trim()) {
+      errors.vin = "VIN is required.";
+    } else if (!vinRegex.test(vin)) {
+      errors.vin =
+        "VIN must be exactly 12 characters (letters I, O, Q not allowed).";
+    }
+
+    // Manufactured Date validation
+    if (!manufactured_date) {
+      errors.manufactured_date = "Manufactured date is required.";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const clearFieldError = (fieldName: keyof ValidationErrors) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
   const handleAddVehicle = () => {
-    if (
-      !first_name ||
-      !last_name ||
-      !email ||
-      !car_make ||
-      !car_model ||
-      !vin ||
-      !manufactured_date
-    ) {
-      alert("Please fill in all fields.");
+    if (!validateForm()) {
       return;
     }
 
@@ -147,6 +213,7 @@ const VehiclePage = () => {
         setCarModel("");
         setVin("");
         setManufacturedDate("");
+        setAgeOfVehicle("");
       })
       .catch((error) => {
         alert("Error adding vehicle: " + error.message);
@@ -228,7 +295,7 @@ const VehiclePage = () => {
                       accept=".csv, .xlsx"
                       style={{
                         fontFamily: "'Montserrat', serif",
-                        fontWeight:"500",
+                        fontWeight: "500",
                         fontSize: "14px",
                       }}
                       onChange={handleFileChange}
@@ -288,8 +355,26 @@ const VehiclePage = () => {
                         fontSize: "14px",
                         fontWeight: 500,
                       }}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      onChange={(e) => {
+                        setFirstName(e.target.value);
+                        clearFieldError("first_name");
+                      }}
+                      className={
+                        validationErrors.first_name ? "is-invalid" : ""
+                      }
                     />
+                    {validationErrors.first_name && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.first_name}
+                      </div>
+                    )}
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label
@@ -309,8 +394,24 @@ const VehiclePage = () => {
                         fontWeight: 500,
                       }}
                       value={last_name}
-                      onChange={(e) => setLastName(e.target.value)}
+                      onChange={(e) => {
+                        setLastName(e.target.value);
+                        clearFieldError("last_name");
+                      }}
+                      className={validationErrors.last_name ? "is-invalid" : ""}
                     />
+                    {validationErrors.last_name && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.last_name}
+                      </div>
+                    )}
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label
@@ -330,8 +431,24 @@ const VehiclePage = () => {
                       }}
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        clearFieldError("email");
+                      }}
+                      className={validationErrors.email ? "is-invalid" : ""}
                     />
+                    {validationErrors.email && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.email}
+                      </div>
+                    )}
                   </Form.Group>
                   <Row className="mb-3">
                     <Col md={6}>
@@ -353,8 +470,26 @@ const VehiclePage = () => {
                           }}
                           type="text"
                           value={car_make}
-                          onChange={(e) => setCarMake(e.target.value)}
+                          onChange={(e) => {
+                            setCarMake(e.target.value);
+                            clearFieldError("car_make");
+                          }}
+                          className={
+                            validationErrors.car_make ? "is-invalid" : ""
+                          }
                         />
+                        {validationErrors.car_make && (
+                          <div
+                            style={{
+                              color: "#dc3545",
+                              fontSize: "14px",
+                              marginTop: "5px",
+                              fontFamily: "'Montserrat', serif",
+                            }}
+                          >
+                            {validationErrors.car_make}
+                          </div>
+                        )}
                       </Form.Group>
                     </Col>
                     <Col md={6}>
@@ -376,8 +511,26 @@ const VehiclePage = () => {
                           }}
                           type="text"
                           value={car_model}
-                          onChange={(e) => setCarModel(e.target.value)}
+                          onChange={(e) => {
+                            setCarModel(e.target.value);
+                            clearFieldError("car_model");
+                          }}
+                          className={
+                            validationErrors.car_model ? "is-invalid" : ""
+                          }
                         />
+                        {validationErrors.car_model && (
+                          <div
+                            style={{
+                              color: "#dc3545",
+                              fontSize: "14px",
+                              marginTop: "5px",
+                              fontFamily: "'Montserrat', serif",
+                            }}
+                          >
+                            {validationErrors.car_model}
+                          </div>
+                        )}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -400,8 +553,24 @@ const VehiclePage = () => {
                       }}
                       type="text"
                       value={vin}
-                      onChange={(e) => setVin(e.target.value)}
+                      onChange={(e) => {
+                        setVin(e.target.value);
+                        clearFieldError("vin");
+                      }}
+                      className={validationErrors.vin ? "is-invalid" : ""}
                     />
+                    {validationErrors.vin && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.vin}
+                      </div>
+                    )}
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label
@@ -424,6 +593,7 @@ const VehiclePage = () => {
                       onChange={(e) => {
                         const selectedDate = e.target.value;
                         setManufacturedDate(selectedDate);
+                        clearFieldError("manufactured_date");
 
                         // Calculate vehicle age
                         const manufactureYear = new Date(
@@ -433,7 +603,22 @@ const VehiclePage = () => {
                         const age = currentYear - manufactureYear;
                         setAgeOfVehicle(age.toString());
                       }}
+                      className={
+                        validationErrors.manufactured_date ? "is-invalid" : ""
+                      }
                     />
+                    {validationErrors.manufactured_date && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.manufactured_date}
+                      </div>
+                    )}
                   </Form.Group>
 
                   <Form.Group className="mb-3">
