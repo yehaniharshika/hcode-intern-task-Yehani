@@ -24,6 +24,20 @@ import {
 import Swal from "sweetalert2";
 import "../pages/style/alert.css";
 
+const nameRegex = /^[A-Za-z\s]{2,30}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const vinRegex = /^[A-HJ-NPR-Z0-9]{12}$/;
+
+interface ValidationErrors {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  car_make?: string;
+  car_model?: string;
+  vin?: string;
+  manufactured_date?: string;
+}
+
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { vehicles, loading, total } = useSelector(
@@ -44,6 +58,9 @@ const Dashboard = () => {
   const [vin, setVin] = useState("");
   const [manufactured_date, setManufacturedDate] = useState("");
   const [age_of_vehicle, setAgeOfVehicle] = useState("");
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
 
   useEffect(() => {
     dispatch(getAllVehicles(page));
@@ -59,6 +76,7 @@ const Dashboard = () => {
     setVin(vehicle.vin);
     setManufacturedDate(vehicle.manufactured_date);
     setAgeOfVehicle(vehicle.age_of_vehicle);
+    setValidationErrors({}); // Clear previous validation errors
     setShowModal(true);
   };
 
@@ -126,8 +144,76 @@ const Dashboard = () => {
     });
   };
 
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
+
+    // First Name validation
+    if (!first_name.trim()) {
+      errors.first_name = "First name is required.";
+    } else if (!nameRegex.test(first_name)) {
+      errors.first_name =
+        "First name must be 2-30 characters and contain only letters and spaces.";
+    }
+
+    // Last Name validation
+    if (!last_name.trim()) {
+      errors.last_name = "Last name is required.";
+    } else if (!nameRegex.test(last_name)) {
+      errors.last_name =
+        "Last name must be 2-30 characters and contain only letters and spaces.";
+    }
+
+    // Email validation
+    if (!email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!emailRegex.test(email)) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    // Car Make validation
+    if (!car_make.trim()) {
+      errors.car_make = "Car make is required.";
+    }
+
+    // Car Model validation
+    if (!car_model.trim()) {
+      errors.car_model = "Car model is required.";
+    }
+
+    // VIN validation
+    if (!vin.trim()) {
+      errors.vin = "VIN is required.";
+    } else if (!vinRegex.test(vin)) {
+      errors.vin =
+        "VIN must be exactly 12 characters (letters I, O, Q not allowed).";
+    }
+
+    // Manufactured Date validation
+    if (!manufactured_date) {
+      errors.manufactured_date = "Manufactured date is required.";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const clearFieldError = (fieldName: keyof ValidationErrors) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
   const handleUpdateVehicle = () => {
     if (!selectedVehicle?.id) return;
+
+    // Add validation check before updating
+    if (!validateForm()) {
+      return; // Stop execution if validation fails
+    }
 
     const updatedVehicle = {
       id: selectedVehicle.id,
@@ -140,11 +226,13 @@ const Dashboard = () => {
       manufactured_date,
       age_of_vehicle,
     };
+    
     dispatch(updateVehicle(updatedVehicle))
       .unwrap()
       .then(() => {
         setShowModal(false);
         setSelectedVehicle(null);
+        setValidationErrors({}); // Clear validation errors on success
         Swal.fire({
           title: "✅ Success!",
           html: '<p class="swal-text">Vehicle updated successfully.</p>',
@@ -153,8 +241,8 @@ const Dashboard = () => {
           background: "white",
           color: "black",
           confirmButtonColor: "green",
-          timer: 3000, // Auto-close after 10 seconds
-          width: "450px", // Small window size
+          timer: 3000,
+          width: "450px",
           customClass: {
             title: "swal-title",
             popup: "swal-popup",
@@ -165,12 +253,12 @@ const Dashboard = () => {
       .catch((err) => {
         Swal.fire({
           title: "❌ Error!",
-          html: '<p class="swal-text">Failed to update Vehicle.</p>', // Added class for styling
+          html: '<p class="swal-text">Failed to update Vehicle.</p>',
           icon: "error",
           confirmButtonText: "OK",
           background: "white",
           color: "black",
-          confirmButtonColor: "green",
+          confirmButtonColor: "red",
           timer: 3000,
           width: "420px",
           customClass: {
@@ -181,6 +269,12 @@ const Dashboard = () => {
         });
         console.error("Failed to update vehicle:", err);
       });
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedVehicle(null);
+    setValidationErrors({}); // Clear validation errors when closing modal
   };
 
   const filteredVehicles = vehicles.filter((vehicle: any) =>
@@ -204,7 +298,7 @@ const Dashboard = () => {
                       style={{
                         border: "2px solid gray",
                         borderRadius: "5px",
-                        overflow: "hidden", // ensures border is not broken by inner elements
+                        overflow: "hidden",
                       }}
                     >
                       <FormControl
@@ -214,7 +308,7 @@ const Dashboard = () => {
                         style={{
                           fontFamily: "'Montserrat', serif",
                           fontSize: "14px",
-                          border: "none", // remove default inner border
+                          border: "none",
                           boxShadow: "none",
                           color: "black",
                         }}
@@ -222,7 +316,7 @@ const Dashboard = () => {
                       <InputGroup.Text
                         style={{
                           backgroundColor: "#fff",
-                          border: "none", // remove inner border
+                          border: "none",
                         }}
                       >
                         <MdSearch />
@@ -389,7 +483,7 @@ const Dashboard = () => {
         </Container>
 
         {/* Edit Modal */}
-        <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal show={showModal} onHide={handleModalClose} centered>
           <Modal.Header closeButton>
             <Modal.Title
               style={{
@@ -403,122 +497,214 @@ const Dashboard = () => {
           </Modal.Header>
           <Modal.Body>
             <Form>
+              <h4
+                className="mb-4"
+                style={{
+                  fontFamily: "'Montserrat', serif",
+                  fontSize: "20px",
+                }}
+              >
+                Vehicle Details Form
+              </h4>
+              <hr />
               <Form.Group className="mb-3">
                 <Form.Label
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                   }}
                 >
                   First Name
                 </Form.Label>
                 <Form.Control
+                  type="text"
+                  value={first_name}
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: 500,
                   }}
-                  type="text"
-                  value={first_name}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    clearFieldError("first_name");
+                  }}
+                  className={validationErrors.first_name ? "is-invalid" : ""}
                 />
+                {validationErrors.first_name && (
+                  <div
+                    style={{
+                      color: "#dc3545",
+                      fontSize: "14px",
+                      marginTop: "5px",
+                      fontFamily: "'Montserrat', serif",
+                    }}
+                  >
+                    {validationErrors.first_name}
+                  </div>
+                )}
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Label
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                   }}
                 >
                   Last Name
                 </Form.Label>
                 <Form.Control
+                  type="text"
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: 500,
                   }}
-                  type="text"
                   value={last_name}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                    clearFieldError("last_name");
+                  }}
+                  className={validationErrors.last_name ? "is-invalid" : ""}
                 />
+                {validationErrors.last_name && (
+                  <div
+                    style={{
+                      color: "#dc3545",
+                      fontSize: "14px",
+                      marginTop: "5px",
+                      fontFamily: "'Montserrat', serif",
+                    }}
+                  >
+                    {validationErrors.last_name}
+                  </div>
+                )}
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Label
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                   }}
                 >
-                  Email Address
+                  Email
                 </Form.Label>
                 <Form.Control
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: 500,
                   }}
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    clearFieldError("email");
+                  }}
+                  className={validationErrors.email ? "is-invalid" : ""}
                 />
+                {validationErrors.email && (
+                  <div
+                    style={{
+                      color: "#dc3545",
+                      fontSize: "14px",
+                      marginTop: "5px",
+                      fontFamily: "'Montserrat', serif",
+                    }}
+                  >
+                    {validationErrors.email}
+                  </div>
+                )}
               </Form.Group>
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Car Make
+                    </Form.Label>
+                    <Form.Control
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                      type="text"
+                      value={car_make}
+                      onChange={(e) => {
+                        setCarMake(e.target.value);
+                        clearFieldError("car_make");
+                      }}
+                      className={validationErrors.car_make ? "is-invalid" : ""}
+                    />
+                    {validationErrors.car_make && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.car_make}
+                      </div>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Car Model
+                    </Form.Label>
+                    <Form.Control
+                      style={{
+                        fontFamily: "'Montserrat', serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                      type="text"
+                      value={car_model}
+                      onChange={(e) => {
+                        setCarModel(e.target.value);
+                        clearFieldError("car_model");
+                      }}
+                      className={validationErrors.car_model ? "is-invalid" : ""}
+                    />
+                    {validationErrors.car_model && (
+                      <div
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginTop: "5px",
+                          fontFamily: "'Montserrat', serif",
+                        }}
+                      >
+                        {validationErrors.car_model}
+                      </div>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <Form.Group className="mb-3">
                 <Form.Label
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "600",
-                  }}
-                >
-                  Car Make
-                </Form.Label>
-                <Form.Control
-                  style={{
-                    fontFamily: "'Montserrat', serif",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                  type="text"
-                  value={car_make}
-                  onChange={(e) => setCarMake(e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label
-                  style={{
-                    fontFamily: "'Montserrat', serif",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                  }}
-                >
-                  Car Model
-                </Form.Label>
-                <Form.Control
-                  style={{
-                    fontFamily: "'Montserrat', serif",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                  type="text"
-                  value={car_model}
-                  onChange={(e) => setCarModel(e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label
-                  style={{
-                    fontFamily: "'Montserrat', serif",
-                    fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                   }}
                 >
                   VIN
@@ -527,20 +713,35 @@ const Dashboard = () => {
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: 500,
                   }}
                   type="text"
                   value={vin}
-                  onChange={(e) => setVin(e.target.value)}
+                  onChange={(e) => {
+                    setVin(e.target.value);
+                    clearFieldError("vin");
+                  }}
+                  className={validationErrors.vin ? "is-invalid" : ""}
                 />
+                {validationErrors.vin && (
+                  <div
+                    style={{
+                      color: "#dc3545",
+                      fontSize: "14px",
+                      marginTop: "5px",
+                      fontFamily: "'Montserrat', serif",
+                    }}
+                  >
+                    {validationErrors.vin}
+                  </div>
+                )}
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Label
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                   }}
                 >
                   Manufactured Date
@@ -549,14 +750,16 @@ const Dashboard = () => {
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: 500,
                   }}
                   type="date"
                   value={manufactured_date}
                   onChange={(e) => {
                     const selectedDate = e.target.value;
                     setManufacturedDate(selectedDate);
+                    clearFieldError("manufactured_date");
 
+                    // Calculate vehicle age
                     const manufactureYear = new Date(
                       selectedDate
                     ).getFullYear();
@@ -564,7 +767,22 @@ const Dashboard = () => {
                     const age = currentYear - manufactureYear;
                     setAgeOfVehicle(age.toString());
                   }}
+                  className={
+                    validationErrors.manufactured_date ? "is-invalid" : ""
+                  }
                 />
+                {validationErrors.manufactured_date && (
+                  <div
+                    style={{
+                      color: "#dc3545",
+                      fontSize: "14px",
+                      marginTop: "5px",
+                      fontFamily: "'Montserrat', serif",
+                    }}
+                  >
+                    {validationErrors.manufactured_date}
+                  </div>
+                )}
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -572,7 +790,7 @@ const Dashboard = () => {
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                   }}
                 >
                   Age Of Vehicle
@@ -581,7 +799,7 @@ const Dashboard = () => {
                   style={{
                     fontFamily: "'Montserrat', serif",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: 500,
                   }}
                   type="text"
                   value={age_of_vehicle}
@@ -598,7 +816,7 @@ const Dashboard = () => {
                 fontWeight: "600",
               }}
               variant="secondary"
-              onClick={() => setShowModal(false)}
+              onClick={handleModalClose}
             >
               Cancel
             </Button>
