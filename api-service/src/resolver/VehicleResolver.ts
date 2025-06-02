@@ -6,6 +6,7 @@ import { Vehicle } from "../entity/Vehicle";
 import { createWriteStream } from "fs";
 import path from "path";
 import { FileUpload, GraphQLUpload } from "graphql-upload-minimal";
+import { validateOrReject } from "class-validator";
 
 @Resolver(Vehicle)
 export class VehicleResolver {
@@ -56,6 +57,8 @@ export class VehicleResolver {
       manufactured_date: new Date(manufactured_date),
       age_of_vehicle: age,
     });
+
+    await validateOrReject(vehicle);
     return this.vehicleRepository.save(vehicle);
   }
 
